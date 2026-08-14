@@ -43,6 +43,7 @@
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
   --bg-image: none;
+  --bg-size: auto;
 }
 
 [data-theme="light"] {
@@ -92,6 +93,7 @@
   --bg-image:
     repeating-linear-gradient(0deg, rgba(0,0,0,0.08) 0, rgba(0,0,0,0.08) 1px, transparent 1px, transparent 22px),
     repeating-linear-gradient(90deg, rgba(0,0,0,0.08) 0, rgba(0,0,0,0.08) 1px, transparent 1px, transparent 90px);
+  --bg-size: 90px 22px, 90px 22px;
   --surface: #ffffff;
   --surface-2: #ffe699;
   --border: #b7b7b7;
@@ -133,6 +135,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--bg);
   background-image: var(--bg-image);
+  background-size: var(--bg-size);
   color: var(--text);
   min-height: 100vh;
   line-height: 1.5;
