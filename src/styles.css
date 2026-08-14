@@ -567,6 +567,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
 .result-hd { display: flex; align-items: center; gap: 9px; margin-bottom: 10px; overflow: visible; }
 .result-hd svg { width: 19px; height: 19px; flex-shrink: 0; }
 [data-theme="original"] .premium-card .result.success .result-hd svg { stroke: #000000; }
+[data-theme="original"] .calc-column > .result.success .result-hd svg { stroke: #000000; }
 .result-title { font-size: 14px; font-weight: 600; }
 .success .result-title { color: var(--success); }
 .warn .result-title { color: var(--warn); }
@@ -728,6 +729,8 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
 [data-theme="light"] .tile { border-color: rgba(15,158,118,.3); }
 [data-theme="original"] .tile { border-color: var(--success-bd); }
 .tile-num { font-size: 28px; font-weight: 600; color: var(--success); line-height: 1.1; letter-spacing: -.02em; }
+[data-theme="original"] .calc-column > .result.success .tile-num { color: #000000; }
+[data-theme="original"] .calc-column > .result.success .range-badge { color: #000000; }
 .tile-lbl { font-size: 11px; color: var(--muted); margin-top: 3px; }
 
 .range-badge {
@@ -756,6 +759,11 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
 .prem-pct.increase { color: var(--success); }
 .prem-pct.decrease { color: var(--danger); }
 .prem-pct.flat { color: var(--warn); }
+[data-theme="original"] .premium-stack > .result.danger { background: var(--success-bg); border-color: var(--success-bd); }
+[data-theme="original"] .premium-stack > .result.danger .result-hd svg { stroke: #006100; }
+[data-theme="original"] .premium-stack > .result.danger .result-title { color: #006100; }
+[data-theme="original"] .premium-stack > .result.danger .prem-pct.decrease { color: #006100; }
+[data-theme="original"] .premium-stack > .result.danger .meta { color: #006100; }
 
 #calPopup {
   position: fixed;
