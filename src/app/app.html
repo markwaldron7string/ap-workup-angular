@@ -256,7 +256,7 @@
     </div>
 
     @if (premResult) {
-      <ng-container [ngTemplateOutlet]="resultTpl" [ngTemplateOutletContext]="{ result: premResult }"></ng-container>
+      <ng-container [ngTemplateOutlet]="resultTpl" [ngTemplateOutletContext]="{ result: premResult, secret: true }"></ng-container>
     }
     </div>
   </div>
@@ -293,7 +293,7 @@
   </div>
 }
 
-<ng-template #resultTpl let-result="result">
+<ng-template #resultTpl let-result="result" let-secret="secret">
   <div class="result" [class.success]="result.tone === 'success'" [class.warn]="result.tone === 'warn'" [class.danger]="result.tone === 'danger'">
     <div class="result-hd">
       @switch (result.icon) {
@@ -357,6 +357,23 @@
     }
     @if (result.extraMeta) {
       <div class="meta">{{ result.extraMeta }}</div>
+    }
+    @if (secret && result.copyText; as copyText) {
+      <button
+        class="result-secret-btn"
+        type="button"
+        [class.copied]="copiedText() === copyText.toUpperCase()"
+        [attr.aria-label]="copiedText() === copyText.toUpperCase() ? 'Copied' : 'Copy'"
+        (click)="copyResult(copyText.toUpperCase(), $event)"
+      >
+        <span class="result-copy-flag result-secret-flag" aria-hidden="true">COPY ALL CAPS</span>
+        <span class="result-copy-icon" aria-hidden="true">
+          <span class="keycap-icon" aria-hidden="true"></span>
+          <svg class="check-icon" viewBox="0 0 24 24" fill="none">
+            <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+      </button>
     }
   </div>
 </ng-template>

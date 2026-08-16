@@ -555,6 +555,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
 [data-theme="original"] .state-info strong { color: #1b5eab; }
 
 .result {
+  position: relative;
   border-radius: 12px;
   padding: 1.25rem;
   margin-bottom: 1rem;
@@ -594,12 +595,12 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   pointer-events: none;
   transition: opacity .25s ease, background .15s, border-color .15s, transform .1s;
 }
-.result:hover .result-copy-btn,
+.result:hover:not(:has(.result-secret-btn:hover)) .result-copy-btn,
 .result-copy-btn.copied {
   opacity: 1;
   pointer-events: auto;
 }
-.result:hover .result-copy-btn:focus-visible {
+.result:hover:not(:has(.result-secret-btn:hover)) .result-copy-btn:focus-visible {
   opacity: 1;
   pointer-events: auto;
 }
@@ -610,6 +611,10 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
 }
 [data-theme="light"] .result-copy-btn:hover,
 [data-theme="light"] .result-copy-btn.copied {
+  --copy-btn-icon: var(--copy-btn-hover-border);
+}
+[data-theme="light"] .result-secret-btn:hover,
+[data-theme="light"] .result-secret-btn.copied {
   --copy-btn-icon: var(--copy-btn-hover-border);
 }
 .result-copy-btn:active { transform: scale(.96); }
@@ -644,6 +649,9 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   transition: opacity .2s ease, transform .2s ease, visibility .2s ease, border-color .15s;
   transition-delay: 0s;
   z-index: 2;
+}
+.result-secret-flag {
+  font-size: 9px;
 }
 .result-copy-flag::after {
   content: '';
@@ -716,6 +724,63 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
     opacity: 1;
   }
 }
+
+.result-secret-btn {
+  position: absolute;
+  top: 100%;
+  right: 14px;
+  margin-top: 8px;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--copy-btn-border);
+  border-radius: 8px;
+  background: var(--copy-btn-bg);
+  color: var(--copy-btn-icon);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: visible;
+  opacity: 0;
+  transition: opacity .25s ease, background .15s, border-color .15s, transform .1s;
+}
+.result-secret-btn:hover,
+.result-secret-btn:focus-visible,
+.result-secret-btn.copied {
+  opacity: 1;
+}
+.result-secret-btn:hover,
+.result-secret-btn.copied {
+  background: var(--copy-btn-hover-bg);
+  border-color: var(--copy-btn-hover-border);
+}
+.result-secret-btn:active { transform: scale(.96); }
+.result-secret-btn:not(.copied):hover .result-copy-flag,
+.result-secret-btn:not(.copied):focus-visible .result-copy-flag {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+  border-color: var(--copy-flag-border-hover);
+}
+.result-secret-btn:not(.copied):hover .result-copy-flag::after,
+.result-secret-btn:not(.copied):focus-visible .result-copy-flag::after {
+  border-top-color: var(--copy-flag-border-hover);
+}
+.result-copy-icon .keycap-icon {
+  position: absolute;
+  inset: 0;
+  width: 20px;
+  height: 20px;
+  background: var(--copy-btn-icon);
+  -webkit-mask: url('/keycap-icon.svg') center / contain no-repeat;
+  mask: url('/keycap-icon.svg') center / contain no-repeat;
+  pointer-events: none;
+  transition: opacity .25s ease, background .15s;
+}
+.result-secret-btn:not(.copied) .check-icon { opacity: 0; }
+.result-secret-btn.copied .keycap-icon { opacity: 0; }
+.result-secret-btn.copied .check-icon { opacity: 1; }
 
 .tiles { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
 .tile {
