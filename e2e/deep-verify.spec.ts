@@ -17,43 +17,43 @@ test.describe('Deep calculator audit', () => {
   test.beforeEach(async ({ page }) => { await page.goto('/'); });
 
   // ── NJ DOB path: all bracket boundaries ────────────────────────────────
-  test('NJ bug case: 9/17/2007 workup 9/27/2025 → 13–18 months', async ({ page }) => {
-    await fill(page, 'NJ', '09/17/2007', '09/27/2025');
+  test('NJ bug case: 9/17/2007 workup 9/27/2026 → 13–18 months', async ({ page }) => {
+    await fill(page, 'NJ', '09/17/2007', '09/27/2026');
     await expect(page.locator('.range-badge')).toHaveText('13 – 18 months');
   });
 
   test('NJ: 9 days licensed → 0–6 months', async ({ page }) => {
-    await fill(page, 'NJ', '01/01/2007', '01/10/2024');
+    await fill(page, 'NJ', '01/01/2007', '01/10/2025');
     await expect(page.locator('.range-badge')).toHaveText('0 – 6 months');
   });
 
   test('NJ: 6mo 9d licensed → 7–12 months', async ({ page }) => {
-    await fill(page, 'NJ', '01/01/2007', '07/10/2024');
+    await fill(page, 'NJ', '01/01/2007', '07/10/2025');
     await expect(page.locator('.range-badge')).toHaveText('7 – 12 months');
   });
 
   test('NJ: 12mo 9d licensed → 13–18 months', async ({ page }) => {
-    await fill(page, 'NJ', '01/01/2007', '01/10/2025');
+    await fill(page, 'NJ', '01/01/2007', '01/10/2026');
     await expect(page.locator('.range-badge')).toHaveText('13 – 18 months');
   });
 
   test('NJ: 18mo 9d licensed → 19–24 months', async ({ page }) => {
-    await fill(page, 'NJ', '01/01/2007', '07/10/2025');
+    await fill(page, 'NJ', '01/01/2007', '07/10/2026');
     await expect(page.locator('.range-badge')).toHaveText('19 – 24 months');
   });
 
   test('NJ: 24mo 9d licensed → 25–30 months', async ({ page }) => {
-    await fill(page, 'NJ', '01/01/2007', '01/10/2026');
+    await fill(page, 'NJ', '01/01/2007', '01/10/2027');
     await expect(page.locator('.range-badge')).toHaveText('25 – 30 months');
   });
 
   test('NJ: 30mo 9d licensed → 31–35 months', async ({ page }) => {
-    await fill(page, 'NJ', '01/01/2007', '07/10/2026');
+    await fill(page, 'NJ', '01/01/2007', '07/10/2027');
     await expect(page.locator('.range-badge')).toHaveText('31 – 35 months');
   });
 
   test('NJ: 36mo 9d licensed → More than 36 months', async ({ page }) => {
-    await fill(page, 'NJ', '01/01/2007', '01/10/2027');
+    await fill(page, 'NJ', '01/01/2007', '01/10/2028');
     await expect(page.locator('.range-badge')).toHaveText('More than 36 months');
   });
 
@@ -159,8 +159,8 @@ test.describe('Deep calculator audit', () => {
     await expect(page.locator('.range-badge')).toHaveText('More than 3 years');
   });
 
-  // DOB 1/1/2000, MD license 16 → license 1/1/2016, workup 1/1/2025 → 9yr
-  test('MD: permit 15y9m, license 16, 9yr → More than 3 years', async ({ page }) => {
+  // DOB 1/1/2000, MD license 18 → license 1/1/2018, workup 1/1/2025 → 7yr
+  test('MD: permit 15y9m, license 18, 7yr → More than 3 years', async ({ page }) => {
     await fill(page, 'MD', '01/01/2000', '01/01/2025');
     await expect(page.locator('.range-badge')).toHaveText('More than 3 years');
   });

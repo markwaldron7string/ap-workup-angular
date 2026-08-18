@@ -46,19 +46,20 @@ describe('App', () => {
     const guidelineRules = [
       ['CT', { pM: 192, lM: 192, pL: '16', lL: '16' }],
       ['DE', { pM: 190, lM: 192, pL: '15y10m', lL: '16' }],
-      ['DC', { pM: 192, lM: 192, pL: '16', lL: '16' }],
-      ['HI', { pM: 180, lM: 192, pL: '15', lL: '16' }],
-      ['ID', { pM: 180, lM: 192, pL: '15', lL: '16' }],
+      ['DC', { pM: 192, lM: 204, pL: '16', lL: '17' }],
+      ['HI', { pM: 186, lM: 204, pL: '15½', lL: '17' }],
+      ['ID', { pM: 180, lM: 216, pL: '15', lL: '18' }],
       ['KY', { pM: 180, lM: 192, pL: '15', lL: '16' }],
-      ['LA', { pM: 180, lM: 192, pL: '15', lL: '16' }],
-      ['MD', { pM: 189, lM: 192, pL: '15y9m', lL: '16' }],
+      ['LA', { pM: 180, lM: 204, pL: '15', lL: '17' }],
+      ['MD', { pM: 189, lM: 216, pL: '15y9m', lL: '18' }],
       ['MS', { pM: 180, lM: 192, pL: '15', lL: '16' }],
       ['MT', { pM: 174, lM: 180, pL: '14½', lL: '15' }],
+      ['NE', { pM: 180, lM: 204, pL: '15', lL: '17' }],
       ['NM', { pM: 180, lM: 192, pL: '15', lL: '16' }],
-      ['NY', { pM: 192, lM: 192, pL: '16', lL: '16' }],
-      ['RI', { pM: 192, lM: 192, pL: '16', lL: '16' }],
-      ['SC', { pM: 180, lM: 192, pL: '15', lL: '16' }],
-      ['SD', { pM: 168, lM: 192, pL: '14', lL: '16' }],
+      ['NY', { pM: 192, lM: 204, pL: '16', lL: '17' }],
+      ['RI', { pM: 192, lM: 204, pL: '16', lL: '17' }],
+      ['SC', { pM: 180, lM: 204, pL: '15', lL: '17' }],
+      ['SD', { pM: 180, lM: 192, pL: '15', lL: '16' }],
       ['WA', { pM: 180, lM: 192, pL: '15', lL: '16' }],
       ['WI', { pM: 180, lM: 192, pL: '15', lL: '16' }],
     ] as const;
@@ -71,7 +72,7 @@ describe('App', () => {
   it('uses the guideline permit age when checking Hawaii eligibility', () => {
     component.selectedState = 'HI';
     component.parsedDob = new Date(2010, 0, 1);
-    component.parsedWorkup = new Date(2025, 1, 1);
+    component.parsedWorkup = new Date(2026, 0, 1);
 
     component.calculateYears();
 
@@ -81,7 +82,7 @@ describe('App', () => {
   it('uses the guideline license age when checking New York eligibility', () => {
     component.selectedState = 'NY';
     component.parsedDob = new Date(2009, 0, 1);
-    component.parsedWorkup = new Date(2025, 1, 1);
+    component.parsedWorkup = new Date(2026, 1, 1);
 
     component.calculateYears();
 
@@ -91,7 +92,7 @@ describe('App', () => {
   it('does not treat South Dakota restricted-minor age as regular license age', () => {
     component.selectedState = 'SD';
     component.parsedDob = new Date(2010, 0, 1);
-    component.parsedWorkup = new Date(2024, 6, 2);
+    component.parsedWorkup = new Date(2025, 6, 2);
 
     component.calculateYears();
 
@@ -221,9 +222,9 @@ describe('App', () => {
 
   it('prepares New Jersey clipboard text with the month bracket intact', () => {
     component.selectedState = 'NJ';
-    // DOB 2000-01-01, workup 2017-03-01 → license-eligible 2017-01-01 → 2 months licensed
+    // DOB 2000-01-01, workup 2018-03-01 → license-eligible 2018-01-01 → 2 months licensed
     component.parsedDob = new Date(2000, 0, 1);
-    component.parsedWorkup = new Date(2017, 2, 1);
+    component.parsedWorkup = new Date(2018, 2, 1);
 
     component.calculateYears();
 

@@ -37,8 +37,8 @@ const STATE_DATA: Record<string, StateRule> = {
   MA: { pM: 192, lM: 198, pL: '16', lL: '16½' },
   NC: { pM: 180, lM: 192, pL: '15', lL: '16' },
   CA: { pM: 186, lM: 192, pL: '15½', lL: '16' },
-  NJ: { pM: 192, lM: 204, pL: '16', lL: '17' },
-  DC: { pM: 192, lM: 192, pL: '16', lL: '16' },
+  NJ: { pM: 192, lM: 216, pL: '16', lL: '18' },
+  DC: { pM: 192, lM: 204, pL: '16', lL: '17' },
   AL: { pM: 180, lM: 192, pL: '15', lL: '16' },
   AK: { pM: 168, lM: 192, pL: '14', lL: '16' },
   AZ: { pM: 186, lM: 192, pL: '15½', lL: '16' },
@@ -48,34 +48,34 @@ const STATE_DATA: Record<string, StateRule> = {
   DE: { pM: 190, lM: 192, pL: '15y10m', lL: '16' },
   FL: { pM: 180, lM: 192, pL: '15', lL: '16' },
   GA: { pM: 180, lM: 192, pL: '15', lL: '16' },
-  HI: { pM: 180, lM: 192, pL: '15', lL: '16' },
-  ID: { pM: 180, lM: 192, pL: '15', lL: '16' },
+  HI: { pM: 186, lM: 204, pL: '15½', lL: '17' },
+  ID: { pM: 180, lM: 216, pL: '15', lL: '18' },
   IL: { pM: 180, lM: 192, pL: '15', lL: '16' },
   IN: { pM: 180, lM: 192, pL: '15', lL: '16' },
   IA: { pM: 168, lM: 192, pL: '14', lL: '16' },
   KS: { pM: 168, lM: 192, pL: '14', lL: '16' },
   KY: { pM: 180, lM: 192, pL: '15', lL: '16' },
-  LA: { pM: 180, lM: 192, pL: '15', lL: '16' },
+  LA: { pM: 180, lM: 204, pL: '15', lL: '17' },
   ME: { pM: 180, lM: 192, pL: '15', lL: '16' },
-  MD: { pM: 189, lM: 192, pL: '15y9m', lL: '16' },
+  MD: { pM: 189, lM: 216, pL: '15y9m', lL: '18' },
   MI: { pM: 177, lM: 192, pL: '14y9m', lL: '16' },
   MN: { pM: 180, lM: 192, pL: '15', lL: '16' },
   MS: { pM: 180, lM: 192, pL: '15', lL: '16' },
   MO: { pM: 180, lM: 192, pL: '15', lL: '16' },
   MT: { pM: 174, lM: 180, pL: '14½', lL: '15' },
-  NE: { pM: 180, lM: 192, pL: '15', lL: '16' },
+  NE: { pM: 180, lM: 204, pL: '15', lL: '17' },
   NV: { pM: 186, lM: 192, pL: '15½', lL: '16' },
   NH: { pM: 186, lM: 192, pL: '15½', lL: '16' },
   NM: { pM: 180, lM: 192, pL: '15', lL: '16' },
-  NY: { pM: 192, lM: 192, pL: '16', lL: '16' },
+  NY: { pM: 192, lM: 204, pL: '16', lL: '17' },
   ND: { pM: 168, lM: 192, pL: '14', lL: '16' },
   OH: { pM: 186, lM: 192, pL: '15½', lL: '16' },
   OK: { pM: 186, lM: 192, pL: '15½', lL: '16' },
   OR: { pM: 180, lM: 192, pL: '15', lL: '16' },
   PA: { pM: 192, lM: 198, pL: '16', lL: '16½' },
-  RI: { pM: 192, lM: 192, pL: '16', lL: '16' },
-  SC: { pM: 180, lM: 192, pL: '15', lL: '16' },
-  SD: { pM: 168, lM: 192, pL: '14', lL: '16' },
+  RI: { pM: 192, lM: 204, pL: '16', lL: '17' },
+  SC: { pM: 180, lM: 204, pL: '15', lL: '17' },
+  SD: { pM: 180, lM: 192, pL: '15', lL: '16' },
   TN: { pM: 180, lM: 192, pL: '15', lL: '16' },
   TX: { pM: 180, lM: 192, pL: '15', lL: '16' },
   UT: { pM: 180, lM: 192, pL: '15', lL: '16' },
@@ -441,7 +441,7 @@ export class App {
     const dob = this.parsedDob;
     if (!dob) return;
     if (this.isNj) {
-      const bracket = this.getNJBracket(dob, workup);
+      const bracket = this.getNJBracket(dob, workup, cfg);
       const permitDate = this.addMonths(dob, cfg.pM);
       const licenseDate = this.addMonths(dob, cfg.lM);
       if (bracket === null) {
@@ -449,14 +449,14 @@ export class App {
           tone: 'danger',
           icon: 'x',
           title: "Not yet eligible for a learner's permit",
-          bodyHtml: `As of the workup date, this driver has not yet reached the minimum permit age in New Jersey (age 16).<br><br><strong style="color:var(--danger)">Permit eligible from: ${this.fmtDate(permitDate)}</strong>`,
+          bodyHtml: `As of the workup date, this driver has not yet reached the minimum permit age in New Jersey (age ${cfg.pL}).<br><br><strong style="color:var(--danger)">Permit eligible from: ${this.fmtDate(permitDate)}</strong>`,
         };
       } else if (bracket === 'permit') {
         this.yearsResult = {
           tone: 'warn',
           icon: 'warn',
           title: "Learner's permit age only - not yet licensed",
-          bodyHtml: `As of the workup date, this driver is old enough for a learner's permit in New Jersey but has not yet reached the minimum license age (17).<br><br><strong style="color:var(--warn)">Regular license eligible from: ${this.fmtDate(licenseDate)}</strong>`,
+          bodyHtml: `As of the workup date, this driver is old enough for a learner's permit in New Jersey but has not yet reached the minimum license age (${cfg.lL}).<br><br><strong style="color:var(--warn)">Regular license eligible from: ${this.fmtDate(licenseDate)}</strong>`,
         };
       } else {
         const diff = this.dateDiff(licenseDate, workup);
@@ -1121,23 +1121,11 @@ export class App {
     return 'More than 36 months';
   }
 
-  getNJBracket(dob: Date, workup: Date): string | null {
-    const permitAge = this.addMonths(dob, 192);  // age 16 — permit eligible
-    const licenseAge = this.addMonths(dob, 204); // age 17 — license eligible
-    const m6  = this.addMonths(dob, 210);        // 6 months licensed
-    const m12 = this.addMonths(dob, 216);        // 12 months licensed
-    const m18 = this.addMonths(dob, 222);        // 18 months licensed
-    const m24 = this.addMonths(dob, 228);        // 24 months licensed
-    const m30 = this.addMonths(dob, 234);        // 30 months licensed
-    const m36 = this.addMonths(dob, 240);        // 36 months licensed
-    if (workup < permitAge)  return null;
-    if (workup < licenseAge) return 'permit';
-    if (workup < m6)         return '0 – 6 months';
-    if (workup < m12)        return '7 – 12 months';
-    if (workup < m18)        return '13 – 18 months';
-    if (workup < m24)        return '19 – 24 months';
-    if (workup < m30)        return '25 – 30 months';
-    if (workup < m36)        return '31 – 35 months';
-    return 'More than 36 months';
+  getNJBracket(dob: Date, workup: Date, cfg: StateRule): string | null {
+    const permitDate = this.addMonths(dob, cfg.pM);
+    const licenseDate = this.addMonths(dob, cfg.lM);
+    if (workup < permitDate) return null;
+    if (workup < licenseDate) return 'permit';
+    return this.getNJElapsedRange(this.dateDiff(licenseDate, workup));
   }
 }
