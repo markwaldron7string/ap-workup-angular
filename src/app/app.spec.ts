@@ -141,7 +141,7 @@ describe('App', () => {
     component.guardDateKey(backspace);
 
     expect(backspace.defaultPrevented).toBe(true);
-    expect(component.primaryDateInput).toBe('02/11/999');
+    expect(component.primaryDateInput).toBe('02/1/1999');
     expect(input.selectionStart).toBe(4);
     expect(input.selectionEnd).toBe(4);
   });
@@ -170,18 +170,49 @@ describe('App', () => {
 
     component.onPrimaryDateInput(input);
 
-    expect(component.primaryDateInput).toBe('02/11/999');
+    expect(component.primaryDateInput).toBe('02/1/1999');
     expect(input.selectionStart).toBe(4);
     expect(input.selectionEnd).toBe(4);
   });
 
-  it('formats date input with protected separators and caps month and day entries', () => {
+  it('formats date input with protected separators without clamping mid-edit', () => {
     expect(component.formatDateInput('')).toBe('');
     expect(component.formatDateInput('1')).toBe('1');
-    expect(component.formatDateInput('13')).toBe('12/');
+    expect(component.formatDateInput('13')).toBe('13/');
     expect(component.formatDateInput('123')).toBe('12/3');
-    expect(component.formatDateInput('1232')).toBe('12/31/');
+    expect(component.formatDateInput('1232')).toBe('12/32/');
     expect(component.formatDateInput('12/31/2026')).toBe('12/31/2026');
+  });
+
+  it('spills pasted overflow digits forward into later segments', () => {
+    expect(component.formatDateInput('07/152026')).toBe('07/15/2026');
+  });
+
+  it('allows editing a day segment down without snapping to the max mid-edit', () => {
+    const input = document.createElement('input');
+    input.id = 'dobInput';
+    input.value = '07/5/2026';
+    input.setSelectionRange(4, 4);
+
+    component.onPrimaryDateInput(input);
+
+    expect(component.primaryDateInput).toBe('07/5/2026');
+  });
+
+  it('lets a corrected day digit slot back in without corrupting the year (07/05/2026 -> 07/15/2026)', () => {
+    const input = document.createElement('input');
+    input.id = 'dobInput';
+    input.value = '07/5/2026';
+    input.setSelectionRange(4, 4);
+
+    component.onPrimaryDateInput(input);
+    expect(component.primaryDateInput).toBe('07/5/2026');
+
+    input.value = '07/15/2026';
+    input.setSelectionRange(5, 5);
+    component.onPrimaryDateInput(input);
+
+    expect(component.primaryDateInput).toBe('07/15/2026');
   });
 
   it('keeps date rollover behavior after masked date input is applied', () => {

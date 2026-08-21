@@ -1046,29 +1046,25 @@ export class App {
   }
 
   formatDateInput(value: string): string {
-    const digits = value.replace(/\D/g, '').slice(0, 8);
-    if (!digits) return '';
+    const parts = value.split('/');
+    const rawMonth = (parts[0] ?? '').replace(/\D/g, '');
+    const rawDay = (parts[1] ?? '').replace(/\D/g, '');
+    const rawYear = parts.slice(2).join('').replace(/\D/g, '');
 
-    const month = this.capDateSegment(digits.slice(0, 2), 12);
-    const day = digits.length > 2 ? this.capDateSegment(digits.slice(2, 4), 31) : '';
-    const year = digits.length > 4 ? digits.slice(4) : '';
+    const month = rawMonth.slice(0, 2);
+    const dayDigits = rawMonth.slice(2) + rawDay;
+    const day = dayDigits.slice(0, 2);
+    const yearDigits = dayDigits.slice(2) + rawYear;
+    const year = yearDigits.slice(0, 4);
 
-    if (digits.length > 4) return `${month}/${day}/${year}`;
-    if (digits.length === 4) return `${month}/${day}/`;
-    if (digits.length > 2) return `${month}/${day}`;
-    if (digits.length === 2) return `${month}/`;
-    return month;
+    let formatted = month;
+    if (month.length === 2 || day || year) formatted += `/${day}`;
+    if (day.length === 2 || year) formatted += `/${year}`;
+    return formatted;
   }
 
   isCompleteDateInput(value: string): boolean {
     return value.replace(/\D/g, '').length === 8;
-  }
-
-  capDateSegment(value: string, max: number): string {
-    if (value.length < 2) return value;
-    const numericValue = parseInt(value, 10);
-    if (isNaN(numericValue) || numericValue <= max) return value;
-    return String(max).padStart(2, '0');
   }
 
   formatDisplay(date: Date): string {
