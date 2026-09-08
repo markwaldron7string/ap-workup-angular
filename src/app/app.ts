@@ -37,7 +37,7 @@ const STATE_DATA: Record<string, StateRule> = {
   MA: { pM: 192, lM: 198, pL: '16', lL: '16½' },
   NC: { pM: 180, lM: 192, pL: '15', lL: '16' },
   CA: { pM: 186, lM: 192, pL: '15½', lL: '16' },
-  NJ: { pM: 192, lM: 216, pL: '16', lL: '18' },
+  NJ: { pM: 192, lM: 204, pL: '16', lL: '17' },
   DC: { pM: 192, lM: 204, pL: '16', lL: '17' },
   AL: { pM: 180, lM: 192, pL: '15', lL: '16' },
   AK: { pM: 168, lM: 192, pL: '14', lL: '16' },
