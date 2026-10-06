@@ -389,4 +389,301 @@ describe('App', () => {
     expect(component.fixedFees).toEqual([]);
     expect(component.premResult).toBeNull();
   });
+
+  describe('template interactions', () => {
+    let root: HTMLElement;
+
+    const query = <T extends HTMLElement>(selector: string): T | null => root.querySelector<T>(selector);
+    const get = <T extends HTMLElement>(selector: string): T => {
+      const el = query<T>(selector);
+      if (!el) throw new Error(`Missing element: ${selector}`);
+      return el;
+    };
+    const text = (selector: string): string => get(selector).textContent?.trim() ?? '';
+
+    function click(selector: string): void {
+      get(selector).click();
+      fixture.detectChanges();
+    }
+
+    function typeInto(selector: string, value: string): void {
+      const input = get<HTMLInputElement>(selector);
+      input.value = value;
+      input.dispatchEvent(new Event('input'));
+      fixture.detectChanges();
+    }
+
+    function selectState(code: string): void {
+      const select = get<HTMLSelectElement>('#stateSelect');
+      select.value = code;
+      select.dispatchEvent(new Event('change'));
+      fixture.detectChanges();
+    }
+
+    function clickCalendarDay(day: number): void {
+      const button = Array.from(root.querySelectorAll<HTMLButtonElement>('button.cal-day')).find(
+        (el) => el.textContent?.trim() === String(day),
+      );
+      if (!button) throw new Error(`Missing calendar day: ${day}`);
+      button.click();
+      fixture.detectChanges();
+    }
+
+    function mockClipboard() {
+      const writeText = vi.fn().mockResolvedValue(undefined);
+      Object.defineProperty(navigator, 'clipboard', {
+        configurable: true,
+        value: { writeText },
+      });
+      return writeText;
+    }
+
+    const primaryCalendarBtn = '.field:has(#dobInput) .cal-icon-btn';
+    const workupCalendarBtn = '.field:has(#workupInput) .cal-icon-btn';
+    const mvrToggle = '#mvrPanel input[type="checkbox"]';
+    const ageToggle = '#agePanel input[type="checkbox"]';
+    const yearsCalculateBtn = '.years-card .btn';
+
+    beforeEach(() => {
+      fixture.detectChanges();
+      root = fixture.nativeElement as HTMLElement;
+    });
+
+    it('opens the calendar on the typed date and fills the date of birth from a picked day', () => {
+      typeInto('#dobInput', '03/15/2021');
+      expect(query('#calPopup')).toBeNull();
+
+      click(primaryCalendarBtn);
+
+      expect(text('.cal-month-label')).toBe('March 2021');
+      expect(root.querySelectorAll('.cal-day.empty').length).toBe(1);
+      expect(root.querySelectorAll('button.cal-day').length).toBe(31);
+      expect(text('.cal-day.selected')).toBe('15');
+
+      clickCalendarDay(20);
+
+      expect(query('#calPopup')).toBeNull();
+      expect(component.primaryDateInput).toBe('03/20/2021');
+      expect(component.parsedDob?.getDate()).toBe(20);
+      expect(get<HTMLInputElement>('#dobInput').value).toBe('03/20/2021');
+    });
+
+    it('navigates calendar months and years, wrapping across year boundaries', () => {
+      typeInto('#workupInput', '12/10/2025');
+      click(workupCalendarBtn);
+      expect(text('.cal-month-label')).toBe('December 2025');
+
+      click('.cal-nav[title="Next month"]');
+      expect(text('.cal-month-label')).toBe('January 2026');
+
+      click('.cal-nav[title="Previous month"]');
+      expect(text('.cal-month-label')).toBe('December 2025');
+
+      click('.cal-nav[title="Next year"]');
+      expect(text('.cal-month-label')).toBe('December 2026');
+
+      click('.cal-nav[title="Previous year"]');
+      expect(text('.cal-month-label')).toBe('December 2025');
+
+      clickCalendarDay(25);
+
+      expect(component.workupInput).toBe('12/25/2025');
+      expect(component.parsedWorkup?.getDate()).toBe(25);
+      expect(get<HTMLInputElement>('#workupInput').value).toBe('12/25/2025');
+    });
+
+    it('defaults an empty calendar to the current month and highlights today', () => {
+      vi.useFakeTimers({ toFake: ['Date'] });
+      vi.setSystemTime(new Date(2026, 4, 15, 12));
+
+      click(primaryCalendarBtn);
+
+      expect(text('.cal-month-label')).toBe('May 2026');
+      expect(root.querySelectorAll('.cal-day.empty').length).toBe(5);
+      expect(text('.cal-day.today')).toBe('15');
+      expect(query('.cal-day.selected')).toBeNull();
+
+      vi.useRealTimers();
+    });
+
+    it('closes the calendar when its icon is clicked again or the pointer goes down outside it', () => {
+      click(primaryCalendarBtn);
+      expect(query('#calPopup')).not.toBeNull();
+
+      click(primaryCalendarBtn);
+      expect(query('#calPopup')).toBeNull();
+
+      click(primaryCalendarBtn);
+      get('.cal-month-label').dispatchEvent(new Event('pointerdown', { bubbles: true }));
+      fixture.detectChanges();
+      expect(query('#calPopup')).not.toBeNull();
+
+      document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }));
+      fixture.detectChanges();
+      expect(query('#calPopup')).toBeNull();
+    });
+
+    it('adds a fixed fee pill and removes it again, restoring the original premiums', () => {
+      typeInto('#premOldInput', '1000');
+      typeInto('#premNewInput', '1200');
+      typeInto('#premFeeInput', '25');
+      expect(query('.prem-orig-ref')).toBeNull();
+
+      click('.fee-add-btn');
+
+      expect(text('.fee-pill')).toContain('$25.00');
+      expect(get('.fee-remove-btn').getAttribute('aria-label')).toBe('Remove $25.00 fixed fee');
+      expect(text('.prem-orig-ref')).toContain('Fixed fees: $25.00');
+      expect(get<HTMLInputElement>('#premOldInput').value).toBe('975.00');
+      expect(get<HTMLInputElement>('#premNewInput').value).toBe('1,175.00');
+      expect(get<HTMLInputElement>('#premFeeInput').value).toBe('');
+
+      click('.fee-remove-btn');
+
+      expect(query('.fee-pill')).toBeNull();
+      expect(query('.prem-orig-ref')).toBeNull();
+      expect(get<HTMLInputElement>('#premOldInput').value).toBe('1,000.00');
+      expect(get<HTMLInputElement>('#premNewInput').value).toBe('1,200.00');
+    });
+
+    it('adds a fixed fee when Enter is pressed in the fee field', () => {
+      typeInto('#premFeeInput', '12.5');
+
+      get('#premFeeInput').dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
+      fixture.detectChanges();
+
+      expect(component.fixedFees).toEqual([12.5]);
+      expect(text('.fee-pill')).toContain('$12.50');
+    });
+
+    it('shows a warning card instead of adding a fee that exceeds the premium', () => {
+      typeInto('#premOldInput', '100');
+      typeInto('#premNewInput', '200');
+      typeInto('#premFeeInput', '150');
+
+      click('.fee-add-btn');
+
+      expect(query('.fee-pill')).toBeNull();
+      expect(get('.result').classList.contains('warn')).toBe(true);
+      expect(text('.result-title')).toBe('Fixed fee exceeds premium');
+      expect(text('.result-body')).toContain('Adding a fee of $150.00');
+      expect(query('.result-copy-btn')).toBeNull();
+    });
+
+    it('shows the selected state rule and switches the primary date between DOB and issue date', () => {
+      selectState('TX');
+      expect(text('.state-info')).toContain('Texas');
+      expect(text('.state-info')).toContain('Range output');
+
+      typeInto('#dobInput', '01/01/2000');
+      click(mvrToggle);
+
+      expect(text('label[for="dobInput"]')).toBe('Original DL Issue Date');
+      expect(get<HTMLInputElement>('#dobInput').value).toBe('');
+      expect(get('#agePanel').classList.contains('panel-disabled')).toBe(true);
+
+      click(mvrToggle);
+
+      expect(text('label[for="dobInput"]')).toBe("Driver's Date of Birth");
+      expect(get<HTMLInputElement>('#dobInput').value).toBe('01/01/2000');
+      expect(get('#agePanel').classList.contains('panel-disabled')).toBe(false);
+    });
+
+    it('turns the issue date override off when the age override is enabled', () => {
+      typeInto('#dobInput', '01/01/2000');
+      click(mvrToggle);
+
+      click(ageToggle);
+
+      expect(component.expMvrEnabled).toBe(false);
+      expect(get<HTMLInputElement>(mvrToggle).checked).toBe(false);
+      expect(get('#mvrPanel').classList.contains('panel-disabled')).toBe(true);
+      expect(get<HTMLInputElement>('#dobInput').value).toBe('01/01/2000');
+      expect(query('#ageInput')).not.toBeNull();
+    });
+
+    it('calculates from the age first licensed entered in the override field', () => {
+      selectState('TX');
+      typeInto('#dobInput', '01/01/2000');
+      typeInto('#workupInput', '01/01/2020');
+      expect(query('#ageInput')).toBeNull();
+
+      click(ageToggle);
+      expect(get(yearsCalculateBtn).getAttribute('aria-disabled')).toBe('true');
+
+      typeInto('#ageInput', '18');
+      expect(get(yearsCalculateBtn).getAttribute('aria-disabled')).toBe('false');
+
+      click(yearsCalculateBtn);
+
+      expect(get('.result').classList.contains('success')).toBe(true);
+      expect(text('.range-badge')).toBe('2 – 3 years');
+      expect(text('.meta')).toContain('Based on reported first license age: 18');
+
+      typeInto('#ageInput', '15.5');
+      expect(query('.result')).toBeNull();
+
+      click(yearsCalculateBtn);
+
+      expect(get('.result').classList.contains('warn')).toBe(true);
+      expect(text('.result-title')).toBe("Learner's permit age only - not yet licensed");
+      expect(text('.result-body')).toContain('permit range for Texas');
+
+      click(ageToggle);
+
+      expect(query('#ageInput')).toBeNull();
+      expect(component.expAgeValue).toBeNull();
+      expect(query('.result')).toBeNull();
+    });
+
+    it('copies the result text and the all-caps variant from their buttons', () => {
+      vi.useFakeTimers();
+      const writeText = mockClipboard();
+      const copyText = 'Old premium: $100\nNew premium: $200\n% Difference: 100.0%';
+      typeInto('#premOldInput', '100');
+      typeInto('#premNewInput', '200');
+      click('.premium-card .btn');
+
+      click('.result-copy-btn');
+
+      expect(writeText).toHaveBeenCalledWith(copyText);
+      expect(get('.result-copy-btn').classList.contains('copied')).toBe(true);
+      expect(get('.result-copy-btn').getAttribute('aria-label')).toBe('Copied');
+      expect(get('.result-secret-btn').getAttribute('aria-label')).toBe('Copy');
+
+      click('.result-secret-btn');
+
+      expect(writeText).toHaveBeenLastCalledWith(copyText.toUpperCase());
+      expect(get('.result-secret-btn').classList.contains('copied')).toBe(true);
+      expect(get('.result-copy-btn').classList.contains('copied')).toBe(false);
+
+      vi.advanceTimersByTime(2000);
+      fixture.detectChanges();
+
+      expect(get('.result-secret-btn').getAttribute('aria-label')).toBe('Copy');
+
+      vi.useRealTimers();
+    });
+
+    it('offers the all-caps copy button only on the premium result', () => {
+      selectState('MA');
+      typeInto('#dobInput', '01/01/1990');
+      typeInto('#workupInput', '01/01/2024');
+      click(yearsCalculateBtn);
+
+      expect(text('.tile-num')).toBe('17');
+      expect(text('.tile-lbl')).toBe('years');
+      expect(root.querySelectorAll('.result-copy-btn').length).toBe(1);
+      expect(query('.result-secret-btn')).toBeNull();
+
+      typeInto('#premOldInput', '100');
+      typeInto('#premNewInput', '80');
+      click('.premium-card .btn');
+
+      expect(text('.prem-pct')).toBe('-20.0%');
+      expect(get('.prem-pct').classList.contains('decrease')).toBe(true);
+      expect(root.querySelectorAll('.result-copy-btn').length).toBe(1);
+      expect(query('.result-secret-btn')).toBeNull();
+    });
+  });
 });
