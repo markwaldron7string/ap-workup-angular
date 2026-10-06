@@ -2,7 +2,7 @@
 
 :root {
   color-scheme: dark;
-  --blue: #3375AE;
+  --blue: #277fcd;
   --blue-hover: #2A6193;
   --blue-glow: rgba(51,117,174,0.25);
   --bg: #000;
@@ -86,7 +86,7 @@
 
 [data-theme="original"] {
   color-scheme: light;
-  --blue: #3375AE;
+  --blue: var(var(--blue));
   --blue-hover: #145091;
   --blue-glow: rgba(27,110,194,0.25);
   --bg: #e7e7e7;
