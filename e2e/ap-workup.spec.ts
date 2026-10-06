@@ -154,7 +154,7 @@ test.describe('Theme toggle', () => {
 test.describe('General', () => {
   test('Test 11: Both calculator headings are visible on load', async ({ page }) => {
     await page.goto('/');
-    await expect(page.getByText('YEARS LICENSED CALCULATOR')).toBeVisible();
-    await expect(page.getByText('PREMIUM WORKUP CALCULATOR')).toBeVisible();
+    await expect(page.getByText('Years Licensed Calculator')).toBeVisible();
+    await expect(page.getByText('Premium Workup Calculator')).toBeVisible();
   });
 });

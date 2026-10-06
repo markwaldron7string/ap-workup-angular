@@ -38,8 +38,8 @@ describe('App', () => {
 
     const compiled = fixture.nativeElement as HTMLElement;
 
-    expect(compiled.textContent).toContain('YEARS LICENSED CALCULATOR');
-    expect(compiled.textContent).toContain('PREMIUM WORKUP CALCULATOR');
+    expect(compiled.textContent).toContain('Years Licensed Calculator');
+    expect(compiled.textContent).toContain('Premium Workup Calculator');
   });
 
   it('aligns previously divergent state ages with the AP guideline table', () => {
