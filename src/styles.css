@@ -163,7 +163,8 @@ body {
   padding: 1.5rem 3rem 1.5rem 1.5rem;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-top: 0;
+  border-radius: 0 0 8px 8px;
 }
 .page-grid {
   max-width: 1240px;
@@ -274,13 +275,13 @@ body {
   margin-bottom: .75rem;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 8px;
   padding: 1rem 1.5rem;
 }
 .logo-box {
   width: 44px;
   height: 44px;
-  border-radius: 10px;
+  border-radius: 6px;
   background: var(--blue);
   display: flex;
   align-items: center;
@@ -317,7 +318,7 @@ body {
   gap: 3px;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 10px;
+  border-radius: 6px;
   padding: 3px;
 }
 @media (min-width: 961px) {
@@ -333,7 +334,7 @@ body {
   height: 32px;
   background: transparent;
   border: none;
-  border-radius: 7px;
+  border-radius: 4px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -354,7 +355,7 @@ body {
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 14px;
+  border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 1rem;
   transition: background .2s, border-color .2s;
@@ -390,7 +391,7 @@ select, input.date-input, input.currency-input {
   width: 100%;
   background: var(--surface-2);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 4px;
   color: var(--text);
   font-size: 15px;
   padding: 10px 14px;
@@ -432,7 +433,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   cursor: pointer;
   color: var(--meta);
   padding: 4px;
-  border-radius: 4px;
+  border-radius: 2px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -460,7 +461,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   background: transparent;
   color: var(--muted);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: 13px;
   font-weight: 500;
   padding: 10px 14px;
@@ -500,7 +501,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   transition: background .15s, color .15s;
 }
 .fee-remove-btn:hover { background: var(--surface-2); color: var(--text); }
-.prem-orig-ref { font-size: 12px; color: var(--meta); margin-top: 1rem; padding: 8px 10px; background: var(--surface-2); border-radius: 6px; }
+.prem-orig-ref { font-size: 12px; color: var(--meta); margin-top: 1rem; padding: 8px 10px; background: var(--surface-2); border-radius: 3px; }
 
 .btn-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; margin-top: 1.25rem; }
 .btn,
@@ -518,7 +519,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   background: var(--blue);
   color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 13px;
   transition: background .15s, transform .1s, box-shadow .15s;
   gap: 8px;
@@ -530,7 +531,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   background: transparent;
   color: var(--clear-color);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 13px 18px;
   transition: background .15s, color .15s, border-color .15s;
   gap: 7px;
@@ -543,7 +544,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   margin-top: 1rem;
   background: rgba(47,84,212,0.08);
   border: 1px solid rgba(47,84,212,0.2);
-  border-radius: 8px;
+  border-radius: 4px;
   padding: .65rem 1rem;
   font-size: 13px;
   color: #8899dd;
@@ -556,7 +557,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
 
 .result {
   position: relative;
-  border-radius: 12px;
+  border-radius: 6px;
   padding: 1.25rem;
   margin-bottom: 1rem;
   border: 1px solid;
@@ -582,7 +583,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   width: 32px;
   height: 32px;
   border: 1px solid var(--copy-btn-border);
-  border-radius: 8px;
+  border-radius: 4px;
   background: var(--copy-btn-bg);
   color: var(--copy-btn-icon);
   cursor: pointer;
@@ -633,7 +634,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   bottom: calc(100% + 8px);
   left: 50%;
   padding: 6px 12px;
-  border-radius: 6px;
+  border-radius: 3px;
   background: var(--copy-flag-bg);
   border: 1px solid var(--copy-flag-border);
   color: var(--copy-flag-text);
@@ -733,7 +734,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   width: 32px;
   height: 32px;
   border: 1px solid var(--copy-btn-border);
-  border-radius: 8px;
+  border-radius: 4px;
   background: var(--copy-btn-bg);
   color: var(--copy-btn-icon);
   cursor: pointer;
@@ -786,7 +787,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
 .tile {
   background: var(--tile-bg);
   border: 1px solid rgba(34,211,160,.22);
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 8px 18px;
   text-align: center;
   min-width: 68px;
@@ -802,7 +803,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   display: inline-block;
   background: var(--range-bg);
   border: 1px solid rgba(34,211,160,.25);
-  border-radius: 8px;
+  border-radius: 4px;
   padding: 9px 20px;
   font-size: 18px;
   font-weight: 600;
@@ -835,7 +836,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   z-index: 1000;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 6px;
   padding: 12px;
   box-shadow: 0 8px 32px rgba(0,0,0,0.35);
   width: 268px;
@@ -850,7 +851,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   cursor: pointer;
   font-size: 15px;
   padding: 4px 8px;
-  border-radius: 6px;
+  border-radius: 3px;
   line-height: 1;
   transition: background .12s, color .12s;
 }
@@ -865,7 +866,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   align-items: center;
   justify-content: center;
   font-size: 13px;
-  border-radius: 6px;
+  border-radius: 3px;
   cursor: pointer;
   color: var(--text);
   border: none;
