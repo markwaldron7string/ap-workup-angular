@@ -145,6 +145,26 @@ test.describe('Theme toggle', () => {
     await page.click('.theme-btn[aria-label="Original spreadsheet theme"]');
     expect(await html.getAttribute('data-theme')).toBe('original');
   });
+
+  test('Test 11: Original theme premium table fills results as cells are left', async ({ page }) => {
+    await page.goto('/');
+    await page.click('.theme-btn[aria-label="Original spreadsheet theme"]');
+
+    await page.fill('input[aria-label="Old premium, row 1"]', '700');
+    await page.fill('input[aria-label="New premium, row 1"]', '800');
+    await page.keyboard.press('Tab');
+
+    const row = page.locator('.xl-row').first();
+    await expect(row.locator('.xl-out').first()).toHaveText('100.00');
+    await expect(row.locator('.xl-pct')).toContainText('+14.3%');
+    await expect(page.locator('.xl-detail')).toContainText('Premium increase');
+
+    await page.fill('input[aria-label="Fixed fee, row 1"]', '25');
+    await page.keyboard.press('Enter');
+
+    await expect(row.locator('.xl-chip')).toContainText('25.00');
+    await expect(row.locator('.xl-pct')).toContainText('+14.8%');
+  });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────

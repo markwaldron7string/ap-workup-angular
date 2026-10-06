@@ -724,5 +724,180 @@ describe('App', () => {
       expect(root.querySelectorAll('.result-copy-btn').length).toBe(1);
       expect(query('.result-secret-btn')).toBeNull();
     });
+
+    describe('original theme premium sheet', () => {
+      const rows = (): HTMLElement[] => Array.from(root.querySelectorAll<HTMLElement>('.xl-row'));
+      const cell = (row: number, label: string): HTMLInputElement =>
+        get<HTMLInputElement>(`input[aria-label="${label}, row ${row}"]`);
+      const outputs = (row: number): string[] =>
+        Array.from(rows()[row - 1].querySelectorAll('.xl-out')).map((el) => el.textContent?.trim() ?? '');
+
+      function commit(input: HTMLInputElement, value: string, event: Event = new Event('blur')): void {
+        input.value = value;
+        input.dispatchEvent(event);
+        fixture.detectChanges();
+      }
+
+      beforeEach(() => {
+        click('.theme-btn[aria-label="Original spreadsheet theme"]');
+      });
+
+      it('shows the table in place of the premium form and keeps the years card', () => {
+        expect(query('.xl-table')).not.toBeNull();
+        expect(query('#premOldInput')).toBeNull();
+        expect(query('.years-card #stateSelect')).not.toBeNull();
+        expect(rows().length).toBe(8);
+        expect(root.querySelectorAll('.xl-example').length).toBe(2);
+      });
+
+      it('fills the green cells when a cell is left, without a calculate button', () => {
+        commit(cell(1, 'Old premium'), '700');
+        expect(outputs(1)).toEqual(['', '']);
+
+        commit(cell(1, 'New premium'), '800');
+
+        expect(cell(1, 'Old premium').value).toBe('700.00');
+        expect(outputs(1)).toEqual(['100.00', '+14.3%']);
+        expect(text('.xl-detail')).toContain('Premium increase');
+        expect(text('.xl-detail')).toContain('$700.00 → $800.00');
+        expect(query('.xl-sheet .btn')).toBeNull();
+      });
+
+      it('recalculates on Enter and colours a decrease green', () => {
+        commit(cell(2, 'Old premium'), '900');
+        commit(cell(2, 'New premium'), '800', new KeyboardEvent('keydown', { key: 'Enter' }));
+
+        expect(outputs(2)).toEqual(['-100.00', '-11.1%']);
+        expect(rows()[1].querySelector('.xl-pct')?.classList.contains('decrease')).toBe(true);
+      });
+
+      it('adds and removes fixed fees on the row and updates the result each time', () => {
+        commit(cell(1, 'Old premium'), '700');
+        commit(cell(1, 'New premium'), '800');
+        commit(cell(1, 'Fixed fee'), '25', new KeyboardEvent('keydown', { key: 'Enter' }));
+
+        expect(text('.xl-chip')).toContain('25.00');
+        expect(cell(1, 'Fixed fee').value).toBe('');
+        expect(cell(1, 'Old premium').value).toBe('700.00');
+        expect(outputs(1)).toEqual(['100.00', '+14.8%']);
+        expect(text('.xl-detail')).toContain('$675.00 → $775.00');
+        expect(text('.xl-detail')).toContain('Fixed fees excluded: $25.00');
+
+        click('.xl-chip button');
+
+        expect(query('.xl-chip')).toBeNull();
+        expect(outputs(1)).toEqual(['100.00', '+14.3%']);
+      });
+
+      it('warns on the bar and keeps the fee out when it exceeds the premium', () => {
+        commit(cell(1, 'Old premium'), '700');
+        commit(cell(1, 'New premium'), '800');
+        commit(cell(1, 'Fixed fee'), '700');
+
+        expect(query('.xl-chip')).toBeNull();
+        expect(outputs(1)).toEqual(['', '']);
+        expect(get('.xl-detail').classList.contains('warn')).toBe(true);
+        expect(text('.xl-detail')).toContain('Fixed fee exceeds premium');
+      });
+
+      it('shows the selected row on the bar and clears only that row', () => {
+        commit(cell(1, 'Old premium'), '100');
+        commit(cell(1, 'New premium'), '110');
+        commit(cell(2, 'Old premium'), '200');
+        commit(cell(2, 'New premium'), '150');
+
+        rows()[1].click();
+        fixture.detectChanges();
+        expect(text('.xl-name')).toBe('Row 2 of 8');
+        expect(text('.xl-detail')).toContain('Premium decrease');
+
+        click('.xl-bar .xl-btn');
+
+        expect(cell(2, 'Old premium').value).toBe('');
+        expect(outputs(2)).toEqual(['', '']);
+        expect(outputs(1)).toEqual(['10.00', '+10.0%']);
+      });
+
+      it('copies an increase from the cell and offers the all-caps copy on the bar', async () => {
+        const writeText = mockClipboard();
+        commit(cell(1, 'Old premium'), '100');
+        commit(cell(1, 'New premium'), '110');
+
+        click('.xl-copy');
+        await fixture.whenStable();
+
+        expect(writeText).toHaveBeenCalledWith('Old premium: $100\nNew premium: $110\n% Difference: 10.0%');
+        expect(text('.xl-sheet > .result-secret-btn .result-secret-flag')).toBe('COPY ALL CAPS');
+
+        click('.xl-sheet > .result-secret-btn');
+        await fixture.whenStable();
+
+        expect(writeText).toHaveBeenLastCalledWith('OLD PREMIUM: $100\nNEW PREMIUM: $110\n% DIFFERENCE: 10.0%');
+      });
+
+      it('moves between cells with the arrow keys and stays put on Enter', () => {
+        const press = (key: string): void => {
+          document.activeElement?.dispatchEvent(new KeyboardEvent('keydown', { key, bubbles: true }));
+          fixture.detectChanges();
+        };
+        cell(1, 'Old premium').focus();
+
+        press('ArrowDown');
+        expect(document.activeElement).toBe(cell(2, 'Old premium'));
+        press('ArrowRight');
+        expect(document.activeElement).toBe(cell(2, 'New premium'));
+        press('ArrowRight');
+        expect(document.activeElement).toBe(cell(2, 'Fixed fee'));
+        press('ArrowRight');
+        expect(document.activeElement).toBe(cell(2, 'Fixed fee'));
+        press('ArrowUp');
+        expect(document.activeElement).toBe(cell(1, 'Fixed fee'));
+        press('ArrowLeft');
+        press('ArrowLeft');
+        expect(document.activeElement).toBe(cell(1, 'Old premium'));
+        press('ArrowUp');
+        expect(document.activeElement).toBe(cell(1, 'Old premium'));
+
+        cell(1, 'Old premium').value = '700';
+        press('Enter');
+        expect(cell(1, 'Old premium').value).toBe('700.00');
+        expect(document.activeElement).toBe(cell(1, 'Old premium'));
+      });
+
+      it('keeps the caret inside a cell until it reaches the edge of the text', () => {
+        const input = cell(1, 'New premium');
+        input.value = '800';
+        input.focus();
+        input.setSelectionRange(1, 1);
+
+        input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+        expect(document.activeElement).toBe(input);
+
+        input.setSelectionRange(0, 0);
+        input.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true }));
+        expect(document.activeElement).toBe(cell(1, 'Old premium'));
+      });
+
+      it('clears every row with Clear all', () => {
+        commit(cell(1, 'Old premium'), '100');
+        commit(cell(1, 'New premium'), '110');
+        commit(cell(8, 'Old premium'), '500');
+        expect(rows().length).toBe(9);
+
+        click('.xl-bar .xl-btn:nth-of-type(2)');
+
+        expect(rows().length).toBe(8);
+        expect(cell(1, 'Old premium').value).toBe('');
+        expect(cell(8, 'Old premium').value).toBe('');
+        expect(outputs(1)).toEqual(['', '']);
+        expect(text('.xl-name')).toBe('Row 1 of 8');
+      });
+
+      it('adds another entry row once the last one is used', () => {
+        commit(cell(8, 'Old premium'), '500');
+
+        expect(rows().length).toBe(9);
+      });
+    });
   });
 });

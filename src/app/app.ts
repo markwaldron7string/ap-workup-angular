@@ -33,6 +33,15 @@ interface ResultModel {
   premiumClass?: 'increase' | 'decrease' | 'flat';
 }
 
+interface SheetRow {
+  oldInput: string;
+  newInput: string;
+  feeInput: string;
+  fees: number[];
+  change: string;
+  result: ResultModel | null;
+}
+
 const STATE_DATA: Record<string, StateRule> = {
   MA: { pM: 192, lM: 198, pL: '16', lL: '16½' },
   NC: { pM: 180, lM: 192, pL: '15', lL: '16' },
@@ -182,6 +191,8 @@ export class App {
   premNewDisplayIsNet = false;
   fixedFees: number[] = [];
   premResult: ResultModel | null = null;
+  sheetRows: SheetRow[] = Array.from({ length: 8 }, () => this.blankSheetRow());
+  sheetSel = 0;
   copiedText = signal('');
   private copyResetHandle: number | null = null;
 
@@ -733,11 +744,7 @@ export class App {
     const adjOld = this.origOldPrem !== null ? this.origOldPrem - newTotal : null;
     const adjNew = this.origNewPrem !== null ? this.origNewPrem - newTotal : null;
     if ((adjOld !== null && adjOld <= 0) || (adjNew !== null && adjNew < 0)) {
-      this.premResult = {
-        tone: 'warn', icon: 'warn',
-        title: 'Fixed fee exceeds premium',
-        bodyHtml: `Adding a fee of <strong>$${this.fmtCurrency(fee)}</strong> would leave an adjusted old premium of <strong>$${adjOld !== null ? this.fmtCurrency(adjOld) : '-'}</strong> and adjusted new premium of <strong>$${adjNew !== null ? this.fmtCurrency(adjNew) : '-'}</strong>. Please verify the fee.`,
-      };
+      this.premResult = this.feeExceedsResult(fee, adjOld, adjNew);
       return false;
     }
     this.fixedFees.push(fee);
@@ -779,15 +786,18 @@ export class App {
   calculatePremium(): void {
     if (this.parseCurrency(this.premFeeInput) !== null && !this.addFixedFee()) return;
     if (!this.premiumReady || this.parsedOldPrem === null || this.parsedOldPrem <= 0 || this.parsedNewPrem === null || this.parsedNewPrem < 0) return;
-    const totalFees = this.fixedFeeTotal;
-    const rawPct = (this.parsedNewPrem / this.parsedOldPrem - 1) * 100;
+    this.premResult = this.buildPremiumResult(this.parsedOldPrem, this.parsedNewPrem, this.fixedFeeTotal);
+  }
+
+  buildPremiumResult(oldPrem: number, newPrem: number, totalFees: number): ResultModel {
+    const rawPct = (newPrem / oldPrem - 1) * 100;
     const pct = Math.round(rawPct * 10) / 10;
     const sign = pct > 0 ? '+' : '';
-    const meta = `$${this.fmtCurrency(this.parsedOldPrem)} → $${this.fmtCurrency(this.parsedNewPrem)}`;
+    const meta = `$${this.fmtCurrency(oldPrem)} → $${this.fmtCurrency(newPrem)}`;
     const extraMeta = totalFees > 0 ? `Fixed fees excluded: $${this.fmtCurrency(totalFees)}` : undefined;
     if (pct > 0) {
-      const copyText = this.formatPremiumClipboardText(this.parsedOldPrem, this.parsedNewPrem, pct);
-      this.premResult = {
+      const copyText = this.formatPremiumClipboardText(oldPrem, newPrem, pct);
+      return {
         tone: 'success',
         icon: 'up',
         title: 'Premium increase',
@@ -797,8 +807,9 @@ export class App {
         meta,
         extraMeta,
       };
-    } else if (pct < 0) {
-      this.premResult = {
+    }
+    if (pct < 0) {
+      return {
         tone: 'danger',
         icon: 'down',
         title: 'Premium decrease',
@@ -807,17 +818,129 @@ export class App {
         meta,
         extraMeta,
       };
-    } else {
-      this.premResult = {
-        tone: 'warn',
-        icon: 'flat',
-        title: 'No change',
-        premiumPct: '0.0%',
-        premiumClass: 'flat',
-        meta,
-        extraMeta,
-      };
     }
+    return {
+      tone: 'warn',
+      icon: 'flat',
+      title: 'No change',
+      premiumPct: '0.0%',
+      premiumClass: 'flat',
+      meta,
+      extraMeta,
+    };
+  }
+
+  feeExceedsResult(fee: number | null, adjOld: number | null, adjNew: number | null): ResultModel {
+    const lead = fee !== null ? `Adding a fee of <strong>$${this.fmtCurrency(fee)}</strong> would leave` : 'The fixed fees leave';
+    return {
+      tone: 'warn', icon: 'warn',
+      title: 'Fixed fee exceeds premium',
+      bodyHtml: `${lead} an adjusted old premium of <strong>$${adjOld !== null ? this.fmtCurrency(adjOld) : '-'}</strong> and adjusted new premium of <strong>$${adjNew !== null ? this.fmtCurrency(adjNew) : '-'}</strong>. Please verify the fee.`,
+    };
+  }
+
+  blankSheetRow(): SheetRow {
+    return { oldInput: '', newInput: '', feeInput: '', fees: [], change: '', result: null };
+  }
+
+  get selectedSheetRow(): SheetRow {
+    return this.sheetRows[this.sheetSel];
+  }
+
+  selectSheetRow(index: number): void {
+    this.sheetSel = Math.max(0, Math.min(index, this.sheetRows.length - 1));
+  }
+
+  commitSheetPremium(row: SheetRow, kind: 'old' | 'new', input: HTMLInputElement): void {
+    const parsed = this.parseCurrency(input.value);
+    const value = parsed !== null ? this.fmtCurrency(parsed) : '';
+    if (kind === 'old') row.oldInput = value;
+    else row.newInput = value;
+    input.value = value;
+    this.recalcSheetRow(row);
+  }
+
+  commitSheetFee(row: SheetRow, input: HTMLInputElement): void {
+    const fee = this.parseCurrency(input.value);
+    if (fee !== null) {
+      const total = this.sheetFeeTotal(row) + fee;
+      const oldPrem = this.parseCurrency(row.oldInput);
+      const newPrem = this.parseCurrency(row.newInput);
+      const adjOld = oldPrem !== null ? oldPrem - total : null;
+      const adjNew = newPrem !== null ? newPrem - total : null;
+      if ((adjOld !== null && adjOld <= 0) || (adjNew !== null && adjNew < 0)) {
+        row.feeInput = input.value;
+        row.change = '';
+        row.result = this.feeExceedsResult(fee, adjOld, adjNew);
+        return;
+      }
+      row.fees.push(fee);
+    }
+    row.feeInput = '';
+    input.value = '';
+    this.recalcSheetRow(row);
+  }
+
+  removeSheetFee(row: SheetRow, index: number): void {
+    row.fees.splice(index, 1);
+    this.recalcSheetRow(row);
+  }
+
+  clearSheetRow(): void {
+    this.sheetRows[this.sheetSel] = this.blankSheetRow();
+  }
+
+  clearSheet(): void {
+    this.sheetRows = Array.from({ length: 8 }, () => this.blankSheetRow());
+    this.sheetSel = 0;
+  }
+
+  onSheetKey(event: KeyboardEvent, row: SheetRow, rowIndex: number, col: number): void {
+    const input = event.target as HTMLInputElement;
+    let rowStep = 0;
+    let colStep = 0;
+    if (event.key === 'ArrowUp') rowStep = -1;
+    else if (event.key === 'ArrowDown') rowStep = 1;
+    else if (event.key === 'ArrowLeft' && input.selectionStart === 0) colStep = -1;
+    else if (event.key === 'ArrowRight' && input.selectionEnd === input.value.length) colStep = 1;
+    else {
+      if (event.key === 'Enter') {
+        if (col === 2) this.commitSheetFee(row, input);
+        else this.commitSheetPremium(row, col === 0 ? 'old' : 'new', input);
+      }
+      return;
+    }
+
+    const rows = input.closest('tbody')?.querySelectorAll('.xl-row');
+    const target = rows?.[rowIndex + rowStep]?.querySelectorAll<HTMLInputElement>('input.xl-cell')[col + colStep];
+    if (!target) return;
+    event.preventDefault();
+    target.focus();
+    target.select();
+  }
+
+  sheetFeeTotal(row: SheetRow): number {
+    return row.fees.reduce((sum, fee) => sum + fee, 0);
+  }
+
+  recalcSheetRow(row: SheetRow): void {
+    const oldPrem = this.parseCurrency(row.oldInput);
+    const newPrem = this.parseCurrency(row.newInput);
+    const total = this.sheetFeeTotal(row);
+    row.change = '';
+    row.result = null;
+    if (oldPrem !== null && newPrem !== null) {
+      const adjOld = oldPrem - total;
+      const adjNew = newPrem - total;
+      if (adjOld <= 0 || adjNew < 0) {
+        row.result = this.feeExceedsResult(null, adjOld, adjNew);
+      } else {
+        row.change = this.fmtCurrency(adjNew - adjOld);
+        row.result = this.buildPremiumResult(adjOld, adjNew, total);
+      }
+    }
+    const last = this.sheetRows[this.sheetRows.length - 1];
+    if (last.oldInput || last.newInput || last.fees.length) this.sheetRows.push(this.blankSheetRow());
   }
 
   copyResult(text: string, event: Event): void {

@@ -203,6 +203,112 @@
     </header>
 
     <div class="premium-stack">
+    @if (theme === 'original') {
+      <div class="xl-sheet">
+        <div class="xl-scroll">
+          <table class="xl-table">
+            <colgroup>
+              <col class="xl-col-label" /><col /><col /><col class="xl-col-fees" /><col class="xl-col-change" /><col class="xl-col-pct" />
+            </colgroup>
+            <tbody>
+              <tr class="xl-banner-row"><td colspan="5">See Result in Green Column</td><td></td></tr>
+              <tr class="xl-head">
+                <td></td>
+                <td><span class="xl-key">Old</span><br />Premium</td>
+                <td><span class="xl-key">New</span><br />Premium</td>
+                <td>Fixed<br />Fees</td>
+                <td class="xl-head-note">Change Amount ( Decrease, <span class="xl-good">green</span> numbers are good for customer, <span class="xl-bad">red</span> numbers increase for customer)</td>
+                <td>% Change</td>
+              </tr>
+              <tr class="xl-example">
+                <td class="xl-label">Example 1- INCREASE</td><td class="xl-in">700</td><td class="xl-in">800</td><td class="xl-in"></td>
+                <td class="xl-out increase">100</td><td class="xl-out increase">14.3%</td>
+              </tr>
+              <tr class="xl-example">
+                <td class="xl-label">Example 2 - DECREASE</td><td class="xl-in">900</td><td class="xl-in">800</td><td class="xl-in"></td>
+                <td class="xl-out decrease">-100</td><td class="xl-out decrease">-11.1%</td>
+              </tr>
+              @for (row of sheetRows; track $index; let i = $index) {
+                <tr class="xl-row" [class.sel]="i === sheetSel" (focusin)="selectSheetRow(i)" (click)="selectSheetRow(i)">
+                  <td class="xl-label xl-type">TYPE NEW DATA<span class="xl-arrow" aria-hidden="true"></span></td>
+                  <td class="xl-in" data-label="Old Premium">
+                    <input #oldCell type="text" class="xl-cell" autocomplete="off" inputmode="decimal" [attr.aria-label]="'Old premium, row ' + (i + 1)" [value]="row.oldInput" (keydown)="guardDecimalKey($event); onSheetKey($event, row, i, 0)" (paste)="guardDecimalPaste($event)" (blur)="commitSheetPremium(row, 'old', oldCell)" />
+                  </td>
+                  <td class="xl-in" data-label="New Premium">
+                    <input #newCell type="text" class="xl-cell" autocomplete="off" inputmode="decimal" [attr.aria-label]="'New premium, row ' + (i + 1)" [value]="row.newInput" (keydown)="guardDecimalKey($event); onSheetKey($event, row, i, 1)" (paste)="guardDecimalPaste($event)" (blur)="commitSheetPremium(row, 'new', newCell)" />
+                  </td>
+                  <td class="xl-in" data-label="Fixed Fees">
+                    <div class="xl-fees">
+                      @for (fee of row.fees; track $index) {
+                        <span class="xl-chip">
+                          {{ fmtCurrency(fee) }}
+                          <button type="button" [attr.aria-label]="'Remove $' + fmtCurrency(fee) + ' fixed fee'" (click)="removeSheetFee(row, $index)">×</button>
+                        </span>
+                      }
+                      <input #feeCell type="text" class="xl-cell" autocomplete="off" inputmode="decimal" [attr.aria-label]="'Fixed fee, row ' + (i + 1)" [value]="row.feeInput" (keydown)="guardDecimalKey($event); onSheetKey($event, row, i, 2)" (paste)="guardDecimalPaste($event)" (blur)="commitSheetFee(row, feeCell)" />
+                      <button type="button" class="xl-btn xl-fee-add" aria-label="Add fee" (click)="commitSheetFee(row, feeCell)">+</button>
+                    </div>
+                  </td>
+                  <td class="xl-out" data-label="Change Amount" [class.increase]="row.result?.premiumClass === 'increase'" [class.decrease]="row.result?.premiumClass === 'decrease'" [class.empty]="!row.change"><span>{{ row.change }}</span></td>
+                  <td class="xl-out xl-pct" data-label="% Change" [class.increase]="row.result?.premiumClass === 'increase'" [class.decrease]="row.result?.premiumClass === 'decrease'" [class.empty]="!row.result?.premiumPct">
+                    <span>{{ row.result?.premiumPct }}</span>
+                    @if (row.result?.copyText; as copyText) {
+                      <button type="button" class="xl-btn xl-copy" [class.copied]="copiedText() === copyText" [attr.aria-label]="copiedText() === copyText ? 'Copied' : 'Copy'" (click)="copyResult(copyText, $event)">
+                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3"><rect x="5.5" y="5.5" width="8" height="8" /><path d="M10.5 5.5v-3h-8v8h3" /></svg>
+                      </button>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="xl-bar">
+          <button type="button" class="xl-btn" (click)="clearSheetRow()">Clear row</button>
+          <button type="button" class="xl-btn" (click)="clearSheet()">Clear all</button>
+          <button type="button" class="xl-btn xl-nav" [disabled]="sheetSel === 0" (click)="selectSheetRow(sheetSel - 1)">‹ Prev</button>
+          <button type="button" class="xl-btn xl-nav" [disabled]="sheetSel === sheetRows.length - 1" (click)="selectSheetRow(sheetSel + 1)">Next ›</button>
+          <span class="xl-name">Row {{ sheetSel + 1 }} of {{ sheetRows.length }}</span>
+          <span class="xl-fx" aria-hidden="true">fx</span>
+          <div class="xl-detail" aria-live="polite" [class.warn]="selectedSheetRow.result?.bodyHtml">
+            @if (selectedSheetRow.result; as result) {
+              <strong [class.increase]="result.premiumClass === 'increase'" [class.decrease]="result.premiumClass === 'decrease'">{{ result.title }}</strong>
+              @if (result.bodyHtml) {
+                <span [innerHTML]="result.bodyHtml"></span>
+              }
+              @if (result.meta) {
+                <span>· {{ result.meta }}</span>
+              }
+              @if (result.extraMeta) {
+                <span>· {{ result.extraMeta }}</span>
+              }
+            } @else {
+              Type the old and new premium in the yellow cells.
+            }
+          </div>
+          @if (selectedSheetRow.result?.copyText; as copyText) {
+            <button type="button" class="xl-btn xl-bar-copy" [class.copied]="copiedText() === copyText" (click)="copyResult(copyText, $event)">{{ copiedText() === copyText ? 'Copied' : 'Copy' }}</button>
+          }
+        </div>
+        @if (selectedSheetRow.result?.copyText; as copyText) {
+          <button
+            class="result-secret-btn"
+            type="button"
+            [class.copied]="copiedText() === copyText.toUpperCase()"
+            [attr.aria-label]="copiedText() === copyText.toUpperCase() ? 'Copied' : 'Copy'"
+            (click)="copyResult(copyText.toUpperCase(), $event)"
+          >
+            <span class="result-copy-flag result-secret-flag" aria-hidden="true">COPY ALL CAPS</span>
+            <span class="result-copy-icon" aria-hidden="true">
+              <span class="keycap-icon" aria-hidden="true"></span>
+              <svg class="check-icon" viewBox="0 0 24 24" fill="none">
+                <path d="M20 6L9 17l-5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </button>
+        }
+      </div>
+    } @else {
     <div class="card premium-card">
       <div class="field">
         <label for="premOldInput">Old Premium</label>
@@ -257,6 +363,7 @@
 
     @if (premResult) {
       <ng-container [ngTemplateOutlet]="resultTpl" [ngTemplateOutletContext]="{ result: premResult, secret: true }"></ng-container>
+    }
     }
     </div>
   </div>
