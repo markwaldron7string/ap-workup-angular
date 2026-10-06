@@ -47,18 +47,18 @@ describe('App', () => {
       ['CT', { pM: 192, lM: 192, pL: '16', lL: '16' }],
       ['DE', { pM: 190, lM: 192, pL: '15y10m', lL: '16' }],
       ['DC', { pM: 192, lM: 204, pL: '16', lL: '17' }],
-      ['HI', { pM: 186, lM: 204, pL: '15½', lL: '17' }],
-      ['ID', { pM: 180, lM: 216, pL: '15', lL: '18' }],
+      ['HI', { pM: 186, lM: 192, pL: '15½', lL: '16' }],
+      ['ID', { pM: 180, lM: 180, pL: '15', lL: '15' }],
       ['KY', { pM: 180, lM: 192, pL: '15', lL: '16' }],
       ['LA', { pM: 180, lM: 204, pL: '15', lL: '17' }],
-      ['MD', { pM: 189, lM: 216, pL: '15y9m', lL: '18' }],
+      ['MD', { pM: 189, lM: 198, pL: '15y9m', lL: '16½' }],
       ['MS', { pM: 180, lM: 192, pL: '15', lL: '16' }],
       ['MT', { pM: 174, lM: 180, pL: '14½', lL: '15' }],
-      ['NE', { pM: 180, lM: 204, pL: '15', lL: '17' }],
+      ['NE', { pM: 180, lM: 192, pL: '15', lL: '16' }],
       ['NM', { pM: 180, lM: 192, pL: '15', lL: '16' }],
       ['NY', { pM: 192, lM: 204, pL: '16', lL: '17' }],
-      ['RI', { pM: 192, lM: 204, pL: '16', lL: '17' }],
-      ['SC', { pM: 180, lM: 204, pL: '15', lL: '17' }],
+      ['RI', { pM: 192, lM: 198, pL: '16', lL: '16½' }],
+      ['SC', { pM: 180, lM: 186, pL: '15', lL: '15½' }],
       ['SD', { pM: 180, lM: 192, pL: '15', lL: '16' }],
       ['WA', { pM: 180, lM: 192, pL: '15', lL: '16' }],
       ['WI', { pM: 180, lM: 192, pL: '15', lL: '16' }],
@@ -72,11 +72,50 @@ describe('App', () => {
   it('uses the guideline permit age when checking Hawaii eligibility', () => {
     component.selectedState = 'HI';
     component.parsedDob = new Date(2010, 0, 1);
-    component.parsedWorkup = new Date(2026, 0, 1);
+    component.parsedWorkup = new Date(2025, 8, 1);
 
     component.calculateYears();
 
     expect(component.yearsResult?.title).toBe("Learner's permit age only - not yet licensed");
+  });
+
+  it('starts years licensed at the updated full license age', () => {
+    // DOB 1/1/2010; license date is DOB + full license age
+    const cases = [
+      ['HI', new Date(2026, 0, 1), 'January 1, 2026'],
+      ['ID', new Date(2025, 0, 1), 'January 1, 2025'],
+      ['MD', new Date(2026, 6, 1), 'July 1, 2026'],
+      ['NE', new Date(2026, 0, 1), 'January 1, 2026'],
+      ['RI', new Date(2026, 6, 1), 'July 1, 2026'],
+      ['SC', new Date(2025, 6, 1), 'July 1, 2025'],
+    ] as const;
+
+    for (const [state, licenseDate, label] of cases) {
+      component.selectedState = state;
+      component.parsedDob = new Date(2010, 0, 1);
+
+      component.parsedWorkup = licenseDate;
+      component.calculateYears();
+      expect(component.yearsResult?.title).toBe('Years licensed');
+      expect(component.yearsResult?.meta).toContain(`License eligible from ${label}`);
+
+      const dayBefore = new Date(licenseDate);
+      dayBefore.setDate(dayBefore.getDate() - 1);
+      component.parsedWorkup = dayBefore;
+      component.calculateYears();
+      expect(component.yearsResult?.title).not.toBe('Years licensed');
+    }
+  });
+
+  it('counts years licensed from the updated Maryland license age', () => {
+    component.selectedState = 'MD';
+    component.parsedDob = new Date(2008, 0, 1);
+    component.parsedWorkup = new Date(2026, 0, 1);
+
+    component.calculateYears();
+
+    // Licensed 7/1/2024 at 16½, so 1 yr 6 mo as of workup
+    expect(component.yearsResult?.badge).toBe(component.getRange({ years: 1, months: 6, days: 0 }));
   });
 
   it('uses the guideline license age when checking New York eligibility', () => {

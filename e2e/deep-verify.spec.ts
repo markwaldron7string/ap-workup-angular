@@ -159,8 +159,8 @@ test.describe('Deep calculator audit', () => {
     await expect(page.locator('.range-badge')).toHaveText('More than 3 years');
   });
 
-  // DOB 1/1/2000, MD license 18 → license 1/1/2018, workup 1/1/2025 → 7yr
-  test('MD: permit 15y9m, license 18, 7yr → More than 3 years', async ({ page }) => {
+  // DOB 1/1/2000, MD license 16½ → license 7/1/2016, workup 1/1/2025 → 8yr
+  test('MD: permit 15y9m, license 16½, 8yr → More than 3 years', async ({ page }) => {
     await fill(page, 'MD', '01/01/2000', '01/01/2025');
     await expect(page.locator('.range-badge')).toHaveText('More than 3 years');
   });
