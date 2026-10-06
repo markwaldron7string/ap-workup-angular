@@ -307,7 +307,7 @@ body {
   --logo-glyph-size: 24px;
 }
 .header-text { flex: 1; }
-.header-text h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; color: var(--text); }
+.header-text h1 { font-size: 21px; font-weight: 700; letter-spacing: -0.025em; color: var(--text); }
 .header-text p { font-size: 13px; font-weight: 500; color: var(--muted); margin-top: 2px; }
 .theme-toggle {
   position: static;
@@ -518,6 +518,8 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
 .btn {
   background: var(--blue);
   color: #fff;
+  font-size: 14px;
+  font-weight: 600;
   border: none;
   border-radius: 4px;
   padding: 13px;
