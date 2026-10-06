@@ -815,6 +815,35 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
 [data-theme="light"] .range-badge { border-color: rgba(15,158,118,.3); }
 [data-theme="original"] .range-badge { border-color: var(--success-bd); }
 
+/* Years Licensed result: blue instead of green (light and dark themes) */
+:root:not([data-theme="original"]) .calc-column > .result.success {
+  --success: var(--blue);
+  --success-bg: color-mix(in srgb, var(--blue) 10%, transparent);
+  --success-bd: color-mix(in srgb, var(--blue) 30%, transparent);
+  --result-trim: color-mix(in srgb, var(--blue) 30%, transparent);
+  --copy-flag-bg: #121e2b;
+  --copy-flag-text: var(--blue);
+  --copy-flag-border: color-mix(in srgb, var(--blue) 45%, transparent);
+  --copy-flag-border-hover: color-mix(in srgb, var(--blue) 65%, transparent);
+  --copy-btn-border: color-mix(in srgb, var(--blue) 30%, transparent);
+  --copy-btn-icon: #6cb6f5;
+  --copy-btn-hover-bg: color-mix(in srgb, var(--blue) 33%, transparent);
+  --copy-btn-hover-border: color-mix(in srgb, var(--blue) 50%, transparent);
+}
+:root[data-theme="light"] .calc-column > .result.success {
+  --success-bg: color-mix(in srgb, var(--blue) 7%, transparent);
+  --success-bd: color-mix(in srgb, var(--blue) 20%, transparent);
+  --meta: #69798ad9;
+  --copy-flag-bg: #ecf4fb;
+  --copy-btn-bg: color-mix(in srgb, var(--blue) 7%, transparent);
+  --copy-btn-border: color-mix(in srgb, var(--blue) 38%, transparent);
+  --copy-btn-icon: color-mix(in srgb, var(--blue) 88%, transparent);
+  --copy-btn-hover-bg: color-mix(in srgb, var(--blue) 12%, transparent);
+  --copy-btn-hover-border: color-mix(in srgb, var(--blue) 47%, transparent);
+}
+:root:not([data-theme="original"]) .calc-column > .result.success .tile,
+:root:not([data-theme="original"]) .calc-column > .result.success .range-badge { border-color: var(--result-trim); }
+
 .meta { font-size: 12px; font-weight: 500; color: var(--meta); margin-top: 8px; }
 [data-theme="original"] .premium-card .result.success .meta:first-of-type { color: var(--success); }
 .prem-pct {
