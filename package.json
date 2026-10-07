@@ -10,28 +10,35 @@
     "test:ci": "ng test --watch=false",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:coverage": "ng test --watch=false --coverage"
+    "test:coverage": "ng test --watch=false --coverage",
+    "lint": "ng lint",
+    "format": "prettier --write \"src/**/*.{ts,html,css}\" \"e2e/**/*.ts\" playwright.config.ts eslint.config.js",
+    "format:check": "prettier --check \"src/**/*.{ts,html,css}\" \"e2e/**/*.ts\" playwright.config.ts eslint.config.js"
   },
   "private": true,
   "packageManager": "pnpm@10.28.2",
   "dependencies": {
-    "@angular/common": "^21.2.0",
-    "@angular/compiler": "^21.2.0",
-    "@angular/core": "^21.2.0",
-    "@angular/platform-browser": "^21.2.0",
+    "@angular/common": "^21.2.25",
+    "@angular/compiler": "^21.2.25",
+    "@angular/core": "^21.2.25",
+    "@angular/platform-browser": "^21.2.25",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@angular/build": "^21.2.13",
-    "@angular/cli": "^21.2.13",
-    "@angular/compiler-cli": "^21.2.0",
+    "@angular-eslint/builder": "21.4.0",
+    "@angular/build": "^21.2.26",
+    "@angular/cli": "^21.2.26",
+    "@angular/compiler-cli": "^21.2.25",
+    "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.60.0",
     "@vitest/coverage-v8": "^4.1.8",
+    "angular-eslint": "21.4.0",
+    "eslint": "^10.3.0",
     "jsdom": "^29.1.1",
     "prettier": "^3.8.1",
     "typescript": "~5.9.2",
-    "vitest": "^4.1.8",
-    "wait-on": "^9.0.10"
+    "typescript-eslint": "8.59.2",
+    "vitest": "^4.1.8"
   }
 }

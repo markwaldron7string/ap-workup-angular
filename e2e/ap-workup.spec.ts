@@ -29,7 +29,7 @@ async function fillYearsCalc(
   await page.selectOption('#stateSelect', state);
   await page.fill('#dobInput', dob);
   await page.fill('#workupInput', workup);
-  // Clicking calculate also blurs workupInput, triggering applyWorkupInput.
+  // Clicking calculate also blurs workupInput, which completes the date before it is read.
   await page.click('.years-card .btn');
 }
 
@@ -70,7 +70,9 @@ test.describe('Years Licensed Calculator', () => {
     // DOB 14 years ago → TX permit age 15 → not yet eligible
     await fillYearsCalc(page, 'TX', dobAgo(14));
     await expect(page.locator('.result')).toBeVisible();
-    await expect(page.locator('.result-title')).toContainText("Not yet eligible for a learner's permit");
+    await expect(page.locator('.result-title')).toContainText(
+      "Not yet eligible for a learner's permit",
+    );
   });
 
   test('Test 4: Massachusetts shows an exact year count (tile)', async ({ page }) => {
@@ -128,7 +130,7 @@ test.describe('Premium Workup Calculator', () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-//  DARK MODE
+//  THEMES
 // ─────────────────────────────────────────────────────────────────────────────
 
 test.describe('Theme toggle', () => {
@@ -146,7 +148,9 @@ test.describe('Theme toggle', () => {
     expect(await html.getAttribute('data-theme')).toBe('original');
   });
 
-  test('Test 11: Original theme premium table fills results as cells are left', async ({ page }) => {
+  test('Test 11: Original theme premium table fills results as cells are left', async ({
+    page,
+  }) => {
     await page.goto('/');
     await page.click('.theme-btn[aria-label="Original spreadsheet theme"]');
 
@@ -172,7 +176,7 @@ test.describe('Theme toggle', () => {
 // ─────────────────────────────────────────────────────────────────────────────
 
 test.describe('General', () => {
-  test('Test 11: Both calculator headings are visible on load', async ({ page }) => {
+  test('Test 12: Both calculator headings are visible on load', async ({ page }) => {
     await page.goto('/');
     await expect(page.getByText('Years Licensed Calculator')).toBeVisible();
     await expect(page.getByText('Premium Workup Calculator')).toBeVisible();

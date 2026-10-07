@@ -1,0 +1,43 @@
+/* Reset, component host elements and the page body. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+ * Component host elements are unknown tags, which browsers lay out inline. These ones stand in
+ * for block-level boxes. Element selectors are the weakest there are, so any class still wins.
+ */
+app-years-licensed-calculator,
+app-premium-calculator,
+app-premium-form,
+app-premium-sheet,
+app-result-card,
+app-date-input {
+  display: block;
+}
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg);
+  background-image: var(--bg-image);
+  background-size: var(--bg-size);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.5;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+@supports (forced-color-adjust: none) {
+  body {
+    forced-color-adjust: none;
+  }
+}

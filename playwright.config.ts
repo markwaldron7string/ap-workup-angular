@@ -7,6 +7,13 @@ export default defineConfig({
     baseURL: 'http://localhost:4200',
     screenshot: 'only-on-failure',
   },
+  // Starts the dev server for the run. Locally, a server that is already running is reused.
+  webServer: {
+    command: 'pnpm start',
+    url: 'http://localhost:4200',
+    reuseExistingServer: !process.env.CI,
+    timeout: 120_000,
+  },
   projects: [
     {
       name: 'chromium',

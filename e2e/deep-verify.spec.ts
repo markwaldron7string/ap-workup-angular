@@ -1,12 +1,17 @@
 import { test, expect } from '@playwright/test';
 
 function fmt(d: Date) {
-  return `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')}/${d.getFullYear()}`;
+  return `${String(d.getMonth() + 1).padStart(2, '0')}/${String(d.getDate()).padStart(2, '0')}/${d.getFullYear()}`;
 }
 
 const TODAY = fmt(new Date());
 
-async function fill(page: import('@playwright/test').Page, state: string, dob: string, workup = TODAY) {
+async function fill(
+  page: import('@playwright/test').Page,
+  state: string,
+  dob: string,
+  workup = TODAY,
+) {
   await page.selectOption('#stateSelect', state);
   await page.fill('#dobInput', dob);
   await page.fill('#workupInput', workup);
@@ -14,7 +19,9 @@ async function fill(page: import('@playwright/test').Page, state: string, dob: s
 }
 
 test.describe('Deep calculator audit', () => {
-  test.beforeEach(async ({ page }) => { await page.goto('/'); });
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/');
+  });
 
   // ── NJ DOB path: all bracket boundaries ────────────────────────────────
   test('NJ bug case: 9/17/2008 workup 9/27/2026 → 13–18 months', async ({ page }) => {
@@ -70,7 +77,9 @@ test.describe('Deep calculator audit', () => {
 
   test('NJ: not yet permit eligible (<16) → danger', async ({ page }) => {
     await fill(page, 'NJ', '01/01/2010', '06/15/2023');
-    await expect(page.locator('.result-title')).toContainText("Not yet eligible for a learner's permit");
+    await expect(page.locator('.result-title')).toContainText(
+      "Not yet eligible for a learner's permit",
+    );
   });
 
   // ── Standard range-bracket states ────────────────────────────────────────
@@ -103,7 +112,9 @@ test.describe('Deep calculator audit', () => {
 
   test('TX: under permit age (14y5m) → not eligible', async ({ page }) => {
     await fill(page, 'TX', '01/01/2010', '06/01/2024');
-    await expect(page.locator('.result-title')).toContainText("Not yet eligible for a learner's permit");
+    await expect(page.locator('.result-title')).toContainText(
+      "Not yet eligible for a learner's permit",
+    );
   });
 
   // ── Exact states (show numeric tile) ─────────────────────────────────────

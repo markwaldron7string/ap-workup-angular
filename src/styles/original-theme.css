@@ -1,0 +1,236 @@
+/* Original theme: the old Excel workbook */
+[data-theme='original'] * {
+  border-radius: 0 !important;
+}
+[data-theme='original'] .page-note {
+  border-top: 1px solid #000;
+  border-color: #000;
+  margin-top: 22px;
+}
+[data-theme='original'] .header {
+  display: block;
+  padding: 0;
+  border: 2px solid #000;
+}
+[data-theme='original'] .logo-box {
+  display: none;
+}
+[data-theme='original'] .header-text h1 {
+  font-size: 19px;
+  letter-spacing: 0;
+  padding: 6px 10px 0;
+}
+[data-theme='original'] .header-text p {
+  font-size: 14px;
+  font-weight: 400;
+  color: #000;
+  margin: 0;
+  padding: 0 10px 6px;
+}
+@media (min-width: 961px) {
+  [data-theme='original'] .page-grid {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+    align-items: start;
+    gap: 2rem;
+  }
+  [data-theme='original'] .calc-column {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    grid-row: auto;
+  }
+  [data-theme='original'] .premium-stack {
+    display: block;
+    height: auto;
+  }
+  [data-theme='original'] .calc-column > .card {
+    height: auto;
+  }
+  [data-theme='original'] .page-grid--paired .result {
+    height: auto;
+  }
+}
+@media (min-width: 1161px) {
+  [data-theme='original'] .page-grid {
+    grid-template-columns: 340px minmax(0, 1fr);
+  }
+}
+
+[data-theme='original'] .card {
+  padding: 12px 10px;
+  border: 2px solid #000;
+}
+[data-theme='original'] .row {
+  align-items: end;
+  gap: 8px;
+}
+[data-theme='original'] .field {
+  margin-bottom: 11px;
+}
+[data-theme='original'] label {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+  margin-bottom: 4px;
+}
+[data-theme='original'] .xl-key {
+  color: #0000ff;
+}
+[data-theme='original'] select,
+[data-theme='original'] input.date-input,
+[data-theme='original'] input.currency-input {
+  background-color: #ffffff;
+  border: 1px solid #808080;
+  box-shadow:
+    inset 1px 1px 0 #404040,
+    inset -1px -1px 0 #dfdfdf;
+  font-family: inherit;
+  font-size: 15px;
+  padding: 5px 8px;
+}
+[data-theme='original'] select {
+  padding-right: 32px;
+}
+[data-theme='original'] .date-wrap .date-input {
+  padding-right: 32px;
+}
+[data-theme='original'] select:focus,
+[data-theme='original'] input.date-input:focus,
+[data-theme='original'] input.currency-input:focus {
+  border: 1px solid var(--blue);
+  box-shadow: 0 0 0 1px var(--blue);
+}
+[data-theme='original'] .cal-icon-btn {
+  color: #000;
+  right: 5px;
+}
+[data-theme='original'] .state-info {
+  margin-top: 0;
+  border: 0;
+  padding: 4px 8px;
+}
+[data-theme='original'] .exp-divider {
+  margin: 0 0 8px;
+}
+[data-theme='original'] .exp-panel {
+  margin-bottom: 8px;
+}
+[data-theme='original'] .exp-title {
+  font-size: 15px;
+  font-weight: 400;
+}
+[data-theme='original'] .exp-hint {
+  font-size: 13px;
+}
+[data-theme='original'] .toggle-switch {
+  width: 14px;
+  height: 14px;
+}
+[data-theme='original'] .toggle-track {
+  background: #fff;
+  border: 1px solid #333;
+}
+[data-theme='original'] .toggle-track::before {
+  content: '\2713';
+  width: auto;
+  height: auto;
+  top: 0;
+  left: 1px;
+  background: none;
+  box-shadow: none;
+  color: #000;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 12px;
+  opacity: 0;
+  transition: none;
+}
+[data-theme='original'] .toggle-switch input:checked + .toggle-track {
+  background: #fff;
+}
+[data-theme='original'] .toggle-switch input:checked + .toggle-track::before {
+  transform: none;
+  opacity: 1;
+}
+[data-theme='original'] .toggle-switch input:focus-visible + .toggle-track {
+  outline: 2px solid var(--blue);
+  outline-offset: 1px;
+}
+
+[data-theme='original'] .btn-row {
+  display: flex;
+  gap: 8px;
+  padding-top: 4px;
+}
+[data-theme='original'] .btn,
+[data-theme='original'] .btn-clear,
+.xl-btn {
+  background: #e1e1e1;
+  color: #000;
+  border: 1px solid #8a8a8a;
+  box-shadow:
+    inset 1px 1px 0 #fff,
+    inset -1px -1px 0 #b5b5b5;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1;
+  padding: 6px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+[data-theme='original'] .btn:hover:not(.btn-off),
+[data-theme='original'] .btn-clear:hover,
+.xl-btn:hover:not(:disabled) {
+  background: #e5f1fb;
+  border-color: #0078d7;
+  box-shadow: none;
+}
+[data-theme='original'] .btn.btn-off {
+  opacity: 1;
+  color: #8a8a8a;
+}
+.xl-btn:disabled {
+  color: #8a8a8a;
+  cursor: default;
+}
+.xl-btn:focus-visible {
+  outline: 2px solid #217346;
+  outline-offset: 1px;
+}
+
+[data-theme='original'] .result {
+  border: 2px solid #000;
+  padding: 10px 12px;
+}
+[data-theme='original'] .result::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-top: 7px solid #217346;
+  border-right: 7px solid transparent;
+}
+[data-theme='original'] .result-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+[data-theme='original'] .tile,
+[data-theme='original'] .range-badge {
+  border: 0;
+  padding: 0;
+  text-align: left;
+  font-weight: 700;
+}
+[data-theme='original'] .tile-num {
+  font-size: 40px;
+  font-weight: 700;
+}
+[data-theme='original'] .tile-lbl,
+[data-theme='original'] .meta {
+  font-size: 13px;
+  font-weight: 400;
+  color: #000;
+}

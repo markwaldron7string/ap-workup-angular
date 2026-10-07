@@ -1,0 +1,12 @@
+@for (paragraph of body(); track $index) {
+  @if (!$first) {
+    <br /><br />
+  }
+  @for (segment of paragraph; track $index) {
+    @if (segment.strong) {
+      <strong>{{ segment.text }}</strong>
+    } @else {
+      <ng-container>{{ segment.text }}</ng-container>
+    }
+  }
+}

@@ -1,0 +1,108 @@
+@let grossOld = store.fields.old.gross();
+@let grossNew = store.fields.new.gross();
+
+<div class="field">
+  <label for="premOldInput">Old Premium</label>
+  <div class="currency-wrap">
+    <input
+      #oldPremium
+      appDecimalInput
+      type="text"
+      class="currency-input"
+      id="premOldInput"
+      placeholder="0.00"
+      autocomplete="off"
+      inputmode="decimal"
+      [value]="store.fields.old.text()"
+      (input)="store.typePremium('old', oldPremium.value)"
+      (blur)="store.commitPremium('old')"
+    />
+  </div>
+</div>
+<div class="field field--no-bottom">
+  <label for="premNewInput">New Premium</label>
+  <div class="currency-wrap">
+    <input
+      #newPremium
+      appDecimalInput
+      type="text"
+      class="currency-input"
+      id="premNewInput"
+      placeholder="0.00"
+      autocomplete="off"
+      inputmode="decimal"
+      [value]="store.fields.new.text()"
+      (input)="store.typePremium('new', newPremium.value)"
+      (blur)="store.commitPremium('new')"
+    />
+  </div>
+</div>
+
+<div class="field field--fee-entry">
+  <label for="premFeeInput">Fixed Fees</label>
+  <div class="fee-entry-row">
+    <div class="currency-wrap">
+      <input
+        #feeField
+        appDecimalInput
+        type="text"
+        class="currency-input"
+        id="premFeeInput"
+        placeholder="0.00"
+        autocomplete="off"
+        inputmode="decimal"
+        [value]="store.feeText()"
+        (input)="store.feeText.set(feeField.value)"
+        (keydown.enter)="store.addFee()"
+      />
+    </div>
+    <button class="fee-add-btn" type="button" (click)="store.addFee()">
+      <svg
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <line x1="10" y1="4" x2="10" y2="16" />
+        <line x1="4" y1="10" x2="16" y2="10" />
+      </svg>
+      Add fee
+    </button>
+  </div>
+  <div class="fee-list">
+    @for (fee of store.fees(); track $index) {
+      <span class="fee-pill">
+        ${{ formatCurrency(fee) }}
+        <button
+          class="fee-remove-btn"
+          type="button"
+          [attr.aria-label]="'Remove $' + formatCurrency(fee) + ' fixed fee'"
+          (click)="store.removeFee($index)"
+        >
+          ×
+        </button>
+      </span>
+    }
+  </div>
+</div>
+
+@if (store.feeTotal() > 0 && grossOld !== null && grossNew !== null) {
+  <div class="prem-orig-ref">
+    Orig old premium: ${{ formatCurrency(grossOld) }}&nbsp;&nbsp;→&nbsp;&nbsp;Orig new premium: ${{
+      formatCurrency(grossNew)
+    }}&nbsp;&nbsp;→&nbsp;&nbsp;Fixed fees: ${{ formatCurrency(store.feeTotal()) }}
+  </div>
+}
+
+<div class="btn-row">
+  <button
+    class="btn"
+    [class.btn-off]="!store.ready()"
+    [attr.aria-disabled]="store.ready() ? 'false' : 'true'"
+    (click)="store.calculate()"
+  >
+    Calculate
+  </button>
+  <button class="btn-clear" (click)="store.clear()">Clear</button>
+</div>

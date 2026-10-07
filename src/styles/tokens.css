@@ -1,0 +1,131 @@
+/* Colour, font and background tokens for the three themes. Every other stylesheet reads these variables. */
+
+:root {
+  color-scheme: dark;
+  --blue: #277fcd;
+  --blue-hover: #2a6193;
+  --blue-glow: rgba(51, 117, 174, 0.25);
+  --bg: #000;
+  --surface: #202020;
+  --surface-2: #363636;
+  --border: #6969695d;
+  --text: #f2f2f2;
+  --muted: #c7c7c7;
+  --label: #a7a7a7;
+  --meta: #cfcfcf;
+  --placeholder: #787878;
+  --result-body: #aaa;
+  --clear-color: #888;
+  --clear-hover: #bbb;
+  --clear-hover-bg: #1a1a1a;
+  --clear-hover-bd: #444;
+  --tile-bg: rgba(255, 255, 255, 0.04);
+  --range-bg: rgba(255, 255, 255, 0.09);
+  --success: #12dca9de;
+  --success-bg: rgba(16, 214, 188, 0.091);
+  --success-bd: rgba(22, 157, 130, 0.266);
+  --copy-flag-bg: #122428;
+  --copy-flag-border: rgba(34, 211, 202, 0.45);
+  --copy-flag-text: var(--success);
+  --copy-flag-border-hover: rgba(34, 211, 175, 0.65);
+  --copy-btn-bg: transparent;
+  --copy-btn-border: rgba(34, 211, 173, 0.25);
+  --copy-btn-icon: rgb(0, 255, 208);
+  --copy-btn-hover-bg: rgba(12, 127, 108, 0.331);
+  --copy-btn-hover-border: rgba(34, 211, 173, 0.45);
+  --copy-btn-icon-mask: url('/copy-icon-light.png');
+  --warn: #f0aa30;
+  --warn-bg: rgba(240, 170, 48, 0.07);
+  --warn-bd: rgba(240, 170, 48, 0.25);
+  --danger: #f04444;
+  --danger-bg: rgba(240, 68, 68, 0.07);
+  --danger-bd: rgba(240, 68, 68, 0.25);
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --bg-image: none;
+  --bg-size: auto;
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f0f0f2;
+  --surface: #ffffff;
+  --surface-2: #f0f0f2;
+  --border: #dcdce0;
+  --text: #111111;
+  --muted: #444450;
+  --label: #666672;
+  --meta: #698885d9;
+  --placeholder: #b0b0b8;
+  --result-body: #444450;
+  --clear-color: #555560;
+  --clear-hover: #222;
+  --clear-hover-bg: #e8e8ec;
+  --clear-hover-bd: #bbbbcc;
+  --tile-bg: rgba(0, 0, 0, 0.03);
+  --range-bg: rgba(0, 0, 0, 0.04);
+  --success: #108b68dc;
+  --success-bg: rgba(31, 148, 127, 0.067);
+  --success-bd: rgba(15, 158, 141, 0.172);
+  --copy-flag-bg: #ecf9f4;
+  --copy-flag-border: rgba(15, 158, 118, 0.45);
+  --copy-flag-text: var(--success);
+  --copy-flag-border-hover: rgba(15, 158, 118, 0.65);
+  --copy-btn-bg: rgba(24, 210, 158, 0.069);
+  --copy-btn-border: rgba(15, 158, 134, 0.38);
+  --copy-btn-icon: rgba(38, 150, 124, 0.878);
+  --copy-btn-hover-bg: rgba(30, 173, 132, 0.116);
+  --copy-btn-hover-border: rgba(14, 130, 103, 0.467);
+  --warn: #b87d00;
+  --warn-bg: rgba(184, 125, 0, 0.08);
+  --warn-bd: rgba(184, 125, 0, 0.28);
+  --danger: #cc2222;
+  --danger-bg: rgba(204, 34, 34, 0.07);
+  --danger-bd: rgba(204, 34, 34, 0.28);
+}
+
+[data-theme='original'] {
+  color-scheme: light;
+  --blue: #217346;
+  --blue-hover: #185c37;
+  --blue-glow: rgba(33, 115, 70, 0.25);
+  --bg: #ffffff;
+  --bg-image:
+    linear-gradient(#d4d4d4 1px, transparent 1px),
+    linear-gradient(90deg, #d4d4d4 1px, transparent 1px);
+  --bg-size: 90px 22px, 90px 22px;
+  --surface: #ffffff;
+  --surface-2: #f2f2f2;
+  --border: #d0d0d0;
+  --text: #000000;
+  --muted: #404040;
+  --label: #000000;
+  --meta: #3f3f3f;
+  --placeholder: #767676;
+  --result-body: #262626;
+  --clear-color: #000000;
+  --clear-hover: #000000;
+  --clear-hover-bg: #e5f1fb;
+  --clear-hover-bd: #0078d7;
+  --tile-bg: transparent;
+  --range-bg: transparent;
+  --success: #ff0000;
+  --success-bg: #ccffcc;
+  --success-bd: #000000;
+  --copy-flag-bg: #ffffff;
+  --copy-flag-border: #8a8a8a;
+  --copy-flag-text: black;
+  --copy-flag-border-hover: #000000;
+  --copy-btn-bg: #e1e1e1;
+  --copy-btn-border: #8a8a8a;
+  --copy-btn-icon: #000000;
+  --copy-btn-hover-bg: #e5f1fb;
+  --copy-btn-hover-border: #0078d7;
+  --warn: #9c6500;
+  --warn-bg: #ffeb9c;
+  --warn-bd: #000000;
+  --danger: #9c0006;
+  --danger-bg: #ffc7ce;
+  --danger-bd: #000000;
+  --font-body: Calibri, Carlito, 'Segoe UI', Arial, sans-serif;
+}

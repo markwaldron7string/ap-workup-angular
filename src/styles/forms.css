@@ -1,0 +1,336 @@
+/* Cards, fields, inputs, fee pills, buttons and the state rule banner. */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  transition:
+    background 0.2s,
+    border-color 0.2s;
+}
+@media (min-width: 961px) {
+  .years-card,
+  .premium-card {
+    display: flex;
+    flex-direction: column;
+  }
+  .years-card .btn-row,
+  .premium-card .btn-row {
+    margin-top: auto;
+    padding-top: 1.25rem;
+  }
+}
+
+.field {
+  margin-bottom: 1.1rem;
+}
+.field:last-of-type {
+  margin-bottom: 0;
+}
+.field--no-bottom {
+  margin-bottom: 0;
+}
+.field--fee-entry {
+  margin-top: 1.1rem;
+  margin-bottom: 0;
+}
+label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--label);
+  margin-bottom: 7px;
+}
+
+select,
+input.date-input,
+input.currency-input {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  color: var(--text);
+  font-size: 15px;
+  padding: 10px 14px;
+  outline: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    background 0.2s;
+}
+input.date-input,
+input.currency-input {
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: 'tnum' 1;
+}
+select:focus,
+input.date-input:focus,
+input.currency-input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px var(--blue-glow);
+}
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='7' viewBox='0 0 12 7'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 13px center;
+  padding-right: 36px;
+}
+input.date-input::placeholder,
+input.currency-input::placeholder {
+  color: var(--placeholder);
+}
+/* Match the height of the Premium Workup inputs */
+.years-card select {
+  padding-top: 9px;
+  padding-bottom: 9px;
+}
+.years-card input.date-input {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 960px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
+.date-wrap {
+  position: relative;
+}
+.date-wrap .date-input {
+  padding-right: 42px;
+}
+.cal-icon-btn {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--meta);
+  padding: 4px;
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.15s,
+    background 0.15s;
+}
+.cal-icon-btn:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+.cal-icon-btn svg {
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
+.currency-wrap {
+  position: relative;
+}
+.currency-wrap::before {
+  content: '$';
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--meta);
+  font-size: 15px;
+  pointer-events: none;
+  z-index: 1;
+}
+.currency-input {
+  padding-left: 28px !important;
+}
+/* Match the height of the Add fee button */
+.premium-card .currency-input {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+/* The Add fee button stretches to the input's height, so their edges line up */
+.fee-entry-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: stretch;
+}
+.fee-add-btn {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 0 14px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+.fee-add-btn:hover {
+  background: var(--clear-hover-bg);
+  color: var(--clear-hover);
+  border-color: var(--clear-hover-bd);
+}
+.fee-add-btn svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.fee-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.fee-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--range-bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 6px 8px 6px 11px;
+}
+.fee-remove-btn {
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--meta);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s,
+    color 0.15s;
+}
+.fee-remove-btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.prem-orig-ref {
+  font-size: 12px;
+  color: var(--meta);
+  margin-top: 1rem;
+  padding: 8px 10px;
+  background: var(--surface-2);
+  border-radius: 3px;
+}
+
+.btn-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  margin-top: 1.25rem;
+}
+.btn,
+.btn-clear {
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn {
+  background: var(--blue);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  padding: 13px;
+  transition:
+    background 0.15s,
+    transform 0.1s,
+    box-shadow 0.15s;
+  gap: 8px;
+}
+.btn:hover:not(.btn-off) {
+  background: var(--blue-hover);
+  box-shadow: 0 4px 18px var(--blue-glow);
+}
+.btn:active:not(.btn-off) {
+  transform: scale(0.99);
+}
+.btn.btn-off {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.btn-clear {
+  background: transparent;
+  color: var(--clear-color);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 13px 18px;
+  transition:
+    background 0.15s,
+    color 0.15s,
+    border-color 0.15s;
+  gap: 7px;
+  white-space: nowrap;
+}
+.btn-clear:hover {
+  background: var(--clear-hover-bg);
+  color: var(--clear-hover);
+  border-color: var(--clear-hover-bd);
+}
+.btn-clear:active {
+  transform: scale(0.99);
+}
+
+.state-info {
+  margin-top: 1rem;
+  background: rgba(47, 84, 212, 0.08);
+  border: 1px solid rgba(47, 84, 212, 0.2);
+  border-radius: 4px;
+  padding: 0.65rem 1rem;
+  font-size: 13px;
+  color: #8899dd;
+}
+[data-theme='light'] .state-info {
+  color: #3a55bb;
+}
+[data-theme='original'] .state-info {
+  background: #eef1f7;
+  border-color: #b4c6e7;
+  color: #1f3864;
+}
+.state-info strong {
+  color: #7088cc;
+  font-weight: 500;
+}
+[data-theme='light'] .state-info strong {
+  color: #2a45aa;
+}
+[data-theme='original'] .state-info strong {
+  color: #1b5eab;
+}

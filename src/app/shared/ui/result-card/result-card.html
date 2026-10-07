@@ -1,0 +1,140 @@
+@let res = result();
+
+<div class="result-hd">
+  @switch (res.icon) {
+    @case ('check') {
+      <svg
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="var(--success)"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="10" cy="10" r="8" />
+        <path d="M6.5 10.5l2.5 2.5 4.5-5" />
+      </svg>
+    }
+    @case ('warn') {
+      <svg
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="var(--warn)"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M10 2.5L18.5 17H1.5L10 2.5z" />
+        <line x1="10" y1="9" x2="10" y2="13" />
+        <circle cx="10" cy="15.2" r=".8" fill="var(--warn)" stroke="none" />
+      </svg>
+    }
+    @case ('x') {
+      <svg
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="var(--danger)"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <circle cx="10" cy="10" r="8" />
+        <path d="M7 7l6 6M13 7l-6 6" />
+      </svg>
+    }
+    @case ('up') {
+      <svg
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="var(--success)"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="17 4 10 11 6 7 3 10" />
+        <polyline points="13 4 17 4 17 8" />
+      </svg>
+    }
+    @case ('down') {
+      <svg
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="var(--danger)"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <polyline points="3 10 6 13 10 9 17 16" />
+        <polyline points="13 16 17 16 17 12" />
+      </svg>
+    }
+    @case ('flat') {
+      <svg
+        viewBox="0 0 20 20"
+        fill="none"
+        stroke="var(--warn)"
+        stroke-width="2"
+        stroke-linecap="round"
+      >
+        <line x1="3" y1="10" x2="17" y2="10" />
+      </svg>
+    }
+  }
+  <span class="result-title">{{ res.title }}</span>
+  @if (res.copyText; as copyText) {
+    <button
+      class="result-copy-btn"
+      type="button"
+      [class.copied]="clipboard.copiedText() === copyText"
+      [attr.aria-label]="clipboard.copiedText() === copyText ? 'Copied' : 'Copy'"
+      (click)="copy(copyText, $event)"
+    >
+      <span class="result-copy-flag" aria-hidden="true">Copy</span>
+      <span class="result-copy-icon" aria-hidden="true">
+        <span class="copy-icon" aria-hidden="true"></span>
+        <svg class="check-icon" viewBox="0 0 24 24" fill="none">
+          <path
+            d="M20 6L9 17l-5-5"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </span>
+    </button>
+  }
+</div>
+@if (res.body; as body) {
+  <div class="result-body"><app-result-body [body]="body" /></div>
+}
+@if (res.tileNum !== undefined) {
+  <div class="tiles">
+    <div class="tile">
+      <div class="tile-num">{{ res.tileNum }}</div>
+      <div class="tile-lbl">{{ res.tileLabel }}</div>
+    </div>
+  </div>
+}
+@if (res.badge) {
+  <div class="range-badge">{{ res.badge }}</div>
+}
+@if (res.premiumPct) {
+  <div
+    class="prem-pct"
+    [class.increase]="res.premiumClass === 'increase'"
+    [class.decrease]="res.premiumClass === 'decrease'"
+    [class.flat]="res.premiumClass === 'flat'"
+  >
+    {{ res.premiumPct }}
+  </div>
+}
+@if (res.meta) {
+  <div class="meta">{{ res.meta }}</div>
+}
+@if (res.extraMeta) {
+  <div class="meta">{{ res.extraMeta }}</div>
+}
+@if (allCaps() && res.copyText; as copyText) {
+  <button [appCopyAllCaps]="copyText"></button>
+}

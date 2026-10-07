@@ -1,0 +1,127 @@
+<header class="header">
+  <div class="logo-box">
+    <span class="logo-icon logo-icon--license" aria-hidden="true"></span>
+  </div>
+  <div class="header-text">
+    <h1>Years Licensed Calculator</h1>
+    <p>Calculate years licensed with driver's date of birth and workup date</p>
+  </div>
+</header>
+
+<div class="card years-card">
+  <div class="field">
+    <label for="stateSelect">State</label>
+    <select
+      id="stateSelect"
+      #stateSelect
+      [value]="stateCode()"
+      (change)="onStateChange(stateSelect.value)"
+    >
+      <option value="">Select a state…</option>
+      <optgroup label="Exact Calculation (MA · NC · CA)">
+        @for (state of exactStates; track state.code) {
+          <option [value]="state.code">{{ state.code }} - {{ state.name }}</option>
+        }
+      </optgroup>
+      <optgroup label="Months Licensed (NJ)">
+        @for (state of monthsStates; track state.code) {
+          <option [value]="state.code">{{ state.code }} - {{ state.name }}</option>
+        }
+      </optgroup>
+      <optgroup label="All Other States - Range Output">
+        @for (state of rangeStates; track state.code) {
+          <option [value]="state.code">{{ state.code }} - {{ state.name }}</option>
+        }
+      </optgroup>
+    </select>
+    @if (rule(); as rule) {
+      <div class="state-info">
+        <strong>{{ rule.name }}:</strong>
+        Permit age <strong>{{ formatAge(rule.permitMonths) }}</strong> &nbsp;·&nbsp; License age
+        <strong>{{ formatAge(rule.licenseMonths) }}</strong>
+        &nbsp;·&nbsp; {{ modeLabel() }}
+      </div>
+    }
+  </div>
+
+  <div class="row">
+    <div class="field">
+      <label for="dobInput">{{ primaryLabel() }}</label>
+      <app-date-input
+        inputId="dobInput"
+        [value]="primaryText()"
+        (valueChange)="onPrimaryText($event)"
+      />
+    </div>
+    <div class="field">
+      <label for="workupInput">Workup Date</label>
+      <app-date-input
+        inputId="workupInput"
+        [value]="workupText()"
+        (valueChange)="onWorkupText($event)"
+      />
+    </div>
+  </div>
+
+  <div class="exp-divider"></div>
+
+  <div class="exp-panel" id="mvrPanel" [class.panel-disabled]="ageEnabled()">
+    <div class="exp-header">
+      <div class="exp-header-left"><span class="exp-title">Original DL Issue Date</span></div>
+      <label class="toggle-switch" aria-label="Enable original issue date override">
+        <input
+          type="checkbox"
+          [checked]="issueDateEnabled()"
+          (change)="toggleIssueDate(!issueDateEnabled())"
+        />
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+  </div>
+
+  <div class="exp-panel" id="agePanel" [class.panel-disabled]="issueDateEnabled()">
+    <div class="exp-header">
+      <div class="exp-header-left"><span class="exp-title">Age First Licensed</span></div>
+      <label class="toggle-switch" aria-label="Enable age first licensed override">
+        <input type="checkbox" [checked]="ageEnabled()" (change)="toggleAge(!ageEnabled())" />
+        <span class="toggle-track"></span>
+      </label>
+    </div>
+    @if (ageEnabled()) {
+      <div class="exp-content">
+        <p class="exp-hint">
+          A note or MVR indicates the age at which the driver was first licensed. Enter it below -
+          decimals accepted (e.g. 16.5).
+        </p>
+        <label for="ageInput">Age When First Licensed</label>
+        <input
+          #ageField
+          appDecimalInput
+          type="text"
+          class="date-input"
+          id="ageInput"
+          placeholder="e.g.  16  or  16.5"
+          autocomplete="off"
+          [value]="ageText()"
+          (input)="onAgeText(ageField.value)"
+        />
+      </div>
+    }
+  </div>
+
+  <div class="btn-row">
+    <button
+      class="btn"
+      [class.btn-off]="!ready()"
+      [attr.aria-disabled]="ready() ? 'false' : 'true'"
+      (click)="calculate()"
+    >
+      Calculate
+    </button>
+    <button class="btn-clear" (click)="clear()">Clear</button>
+  </div>
+</div>
+
+@if (result(); as result) {
+  <app-result-card [result]="result" />
+}

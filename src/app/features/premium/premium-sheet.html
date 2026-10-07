@@ -1,0 +1,214 @@
+@let selected = store.selectedRow();
+@let copiedText = clipboard.copiedText();
+
+<div class="xl-scroll">
+  <table class="xl-table">
+    <colgroup>
+      <col class="xl-col-label" />
+      <col />
+      <col />
+      <col class="xl-col-fees" />
+      <col class="xl-col-change" />
+      <col class="xl-col-pct" />
+    </colgroup>
+    <tbody>
+      <tr class="xl-banner-row">
+        <td colspan="5">See Result in Green Column</td>
+        <td></td>
+      </tr>
+      <tr class="xl-head">
+        <td></td>
+        <td><span class="xl-key">Old</span><br />Premium</td>
+        <td><span class="xl-key">New</span><br />Premium</td>
+        <td>Fixed<br />Fees</td>
+        <td class="xl-head-note">
+          Change Amount ( Decrease, <span class="xl-good">green</span> numbers are good for
+          customer, <span class="xl-bad">red</span> numbers increase for customer)
+        </td>
+        <td>% Change</td>
+      </tr>
+      <tr class="xl-example">
+        <td class="xl-label">Example 1- INCREASE</td>
+        <td class="xl-in">700</td>
+        <td class="xl-in">800</td>
+        <td class="xl-in"></td>
+        <td class="xl-out increase">100</td>
+        <td class="xl-out increase">14.3%</td>
+      </tr>
+      <tr class="xl-example">
+        <td class="xl-label">Example 2 - DECREASE</td>
+        <td class="xl-in">900</td>
+        <td class="xl-in">800</td>
+        <td class="xl-in"></td>
+        <td class="xl-out decrease">-100</td>
+        <td class="xl-out decrease">-11.1%</td>
+      </tr>
+      @for (row of store.rows(); track $index; let i = $index) {
+        <tr
+          class="xl-row"
+          [class.sel]="i === store.selectedIndex()"
+          (focusin)="store.select(i)"
+          (click)="store.select(i)"
+        >
+          <td class="xl-label xl-type">
+            TYPE NEW DATA<span class="xl-arrow" aria-hidden="true"></span>
+          </td>
+          <td class="xl-in" data-label="Old Premium">
+            <input
+              #cell
+              #oldCell
+              appDecimalInput
+              type="text"
+              class="xl-cell"
+              autocomplete="off"
+              inputmode="decimal"
+              [attr.aria-label]="'Old premium, row ' + (i + 1)"
+              [value]="row.oldInput"
+              (keydown)="onKey($event, i, 0)"
+              (blur)="commitPremium(i, 'old', oldCell)"
+            />
+          </td>
+          <td class="xl-in" data-label="New Premium">
+            <input
+              #cell
+              #newCell
+              appDecimalInput
+              type="text"
+              class="xl-cell"
+              autocomplete="off"
+              inputmode="decimal"
+              [attr.aria-label]="'New premium, row ' + (i + 1)"
+              [value]="row.newInput"
+              (keydown)="onKey($event, i, 1)"
+              (blur)="commitPremium(i, 'new', newCell)"
+            />
+          </td>
+          <td class="xl-in" data-label="Fixed Fees">
+            <div class="xl-fees">
+              @for (fee of row.fees; track $index) {
+                <span class="xl-chip">
+                  {{ formatCurrency(fee) }}
+                  <button
+                    type="button"
+                    [attr.aria-label]="'Remove $' + formatCurrency(fee) + ' fixed fee'"
+                    (click)="store.removeFee(i, $index)"
+                  >
+                    ×
+                  </button>
+                </span>
+              }
+              <input
+                #cell
+                #feeCell
+                appDecimalInput
+                type="text"
+                class="xl-cell"
+                autocomplete="off"
+                inputmode="decimal"
+                [attr.aria-label]="'Fixed fee, row ' + (i + 1)"
+                [value]="row.feeInput"
+                (keydown)="onKey($event, i, 2)"
+                (blur)="commitFee(i, feeCell)"
+              />
+              <button
+                type="button"
+                class="xl-btn xl-fee-add"
+                aria-label="Add fee"
+                (click)="commitFee(i, feeCell)"
+              >
+                +
+              </button>
+            </div>
+          </td>
+          <td
+            class="xl-out"
+            data-label="Change Amount"
+            [class.increase]="row.result?.premiumClass === 'increase'"
+            [class.decrease]="row.result?.premiumClass === 'decrease'"
+            [class.empty]="!row.change"
+          >
+            <span>{{ row.change }}</span>
+          </td>
+          <td
+            class="xl-out xl-pct"
+            data-label="% Change"
+            [class.increase]="row.result?.premiumClass === 'increase'"
+            [class.decrease]="row.result?.premiumClass === 'decrease'"
+            [class.empty]="!row.result?.premiumPct"
+          >
+            <span>{{ row.result?.premiumPct }}</span>
+            @if (row.result?.copyText; as copyText) {
+              <button
+                type="button"
+                class="xl-btn xl-copy"
+                [class.copied]="copiedText === copyText"
+                [attr.aria-label]="copiedText === copyText ? 'Copied' : 'Copy'"
+                (click)="copy(copyText, $event)"
+              >
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3">
+                  <rect x="5.5" y="5.5" width="8" height="8" />
+                  <path d="M10.5 5.5v-3h-8v8h3" />
+                </svg>
+              </button>
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
+<div class="xl-bar">
+  <button type="button" class="xl-btn" (click)="store.clearSelectedRow()">Clear row</button>
+  <button type="button" class="xl-btn" (click)="store.clearAll()">Clear all</button>
+  <button
+    type="button"
+    class="xl-btn xl-nav"
+    [disabled]="store.selectedIndex() === 0"
+    (click)="store.select(store.selectedIndex() - 1)"
+  >
+    ‹ Prev
+  </button>
+  <button
+    type="button"
+    class="xl-btn xl-nav"
+    [disabled]="store.selectedIndex() === store.rows().length - 1"
+    (click)="store.select(store.selectedIndex() + 1)"
+  >
+    Next ›
+  </button>
+  <span class="xl-name">Row {{ store.selectedIndex() + 1 }} of {{ store.rows().length }}</span>
+  <span class="xl-fx" aria-hidden="true">fx</span>
+  <div class="xl-detail" aria-live="polite" [class.warn]="!!selected.result?.body">
+    @if (selected.result; as result) {
+      <strong
+        [class.increase]="result.premiumClass === 'increase'"
+        [class.decrease]="result.premiumClass === 'decrease'"
+        >{{ result.title }}</strong
+      >
+      @if (result.body; as body) {
+        <span><app-result-body [body]="body" /></span>
+      }
+      @if (result.meta) {
+        <span>· {{ result.meta }}</span>
+      }
+      @if (result.extraMeta) {
+        <span>· {{ result.extraMeta }}</span>
+      }
+    } @else {
+      Type the old and new premium in the yellow cells.
+    }
+  </div>
+  @if (selected.result?.copyText; as copyText) {
+    <button
+      type="button"
+      class="xl-btn xl-bar-copy"
+      [class.copied]="copiedText === copyText"
+      (click)="copy(copyText, $event)"
+    >
+      {{ copiedText === copyText ? 'Copied' : 'Copy' }}
+    </button>
+  }
+</div>
+@if (selected.result?.copyText; as copyText) {
+  <button [appCopyAllCaps]="copyText"></button>
+}
