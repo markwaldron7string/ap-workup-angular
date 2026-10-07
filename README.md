@@ -25,7 +25,7 @@ Supports:
 - New Jersey month-bracket output
 - Range output for other states
 - Optional age-first-licensed override
-- Optional original DL issue date override for supported states
+- Optional original DL issue date override
 - One-click copy button on each result card
 
 ### Premium Workup Calculator
@@ -61,7 +61,43 @@ A throwback to the Excel workbook this app replaces.
 - Vitest
 - jsdom
 - Playwright
+- ESLint (angular-eslint) and Prettier
 - GitHub Actions
+
+## Project Structure
+
+```text
+src/
+  app/
+    app.ts                      page shell: notes, theme toggle, the two calculators
+    core/                       app-wide services
+      theme.service.ts          current theme, saved in localStorage
+      clipboard.service.ts      copy to clipboard and "Copied" feedback
+    shared/                     code both calculators use
+      date-utils.ts             parse, format, add months, date difference
+      currency-utils.ts         parse and format money
+      calc-result.ts            the result model the calculators hand to the UI
+      ui/                       reusable components: date input, calendar popup,
+                                result card, theme toggle, decimal input, copy button
+    features/
+      years-licensed/
+        state-rules.ts          permit and license ages for every state
+        years-licensed.ts       the calculation (plain functions, no Angular)
+        years-licensed-calculator.ts
+      premium/
+        premium.ts              the calculation (plain functions, no Angular)
+        premium-form.store.ts   state of the form (light and dark themes)
+        premium-sheet.store.ts  state of the table (original theme)
+        premium-calculator.ts   chooses the form or the table by theme
+        premium-form.ts
+        premium-sheet.ts
+  styles.css                    imports the stylesheets in src/styles/
+  styles/                       global styles split by area; tokens.css holds the theme colours
+  testing/                      helpers shared by the unit tests
+e2e/                            Playwright end-to-end tests
+```
+
+The business rules live in plain TypeScript files (`state-rules.ts`, `years-licensed.ts`, `premium.ts`) so they can be read and tested without Angular. Components only collect input and display results.
 
 ## Getting Started
 
@@ -115,7 +151,7 @@ Run unit tests once with a coverage report:
 pnpm test:coverage
 ```
 
-Run end-to-end tests (the app must already be running on `http://localhost:4200`):
+Run end-to-end tests (starts the app if it is not already running on `http://localhost:4200`):
 
 ```bash
 pnpm test:e2e
@@ -127,22 +163,36 @@ Run end-to-end tests in Playwright's interactive UI:
 pnpm test:e2e:ui
 ```
 
+Lint the code:
+
+```bash
+pnpm lint
+```
+
+Format the code with Prettier, or check that it is formatted:
+
+```bash
+pnpm format
+pnpm format:check
+```
+
 ## Testing
 
 Unit tests are written with Vitest through Angular's unit test builder. End-to-end tests are written with Playwright and run in Chromium.
 
-Current coverage includes:
-
-- Rendering both calculator headings
-- Premium calculator readiness state
-- Premium increase percentage calculation
-- Premium clear/reset behavior
-- Original theme premium table: live results, fixed fees, keyboard navigation, copy, and clear
-
-Spec files live beside the code they test. The main app spec is:
+Spec files live beside the code they test:
 
 ```text
-src/app/app.spec.ts
+src/app/features/years-licensed/state-rules.spec.ts               state table against the guideline ages
+src/app/features/years-licensed/years-licensed.spec.ts            every years licensed outcome
+src/app/features/premium/premium.spec.ts                          percentage change, fees, clipboard text
+src/app/features/premium/premium-form.store.spec.ts               premium form behaviour
+src/app/shared/date-utils.spec.ts, currency-utils.spec.ts         parsing and formatting
+src/app/shared/ui/date-input/                                     date mask and the date field
+src/app/core/                                                     theme and clipboard services
+src/app/features/years-licensed/years-licensed-calculator.spec.ts the years card through its DOM
+src/app/features/premium/premium-calculator.spec.ts               the form and the original theme table through their DOM
+src/app/app.spec.ts                                               the page as a whole: theme switch and layout
 ```
 
 End-to-end specs live in `e2e/`:
@@ -152,7 +202,7 @@ e2e/ap-workup.spec.ts     calculator flows, theme toggle, original theme premium
 e2e/deep-verify.spec.ts   state-by-state audit of years licensed results
 ```
 
-Playwright does not start the app itself. Run `pnpm start` in one terminal, then `pnpm test:e2e` in another.
+Playwright starts the dev server for the run. If `pnpm start` is already running locally, it uses that instead.
 
 ## Continuous Integration
 
@@ -161,10 +211,12 @@ GitHub Actions runs on pushes and pull requests to `main`.
 The CI workflow:
 
 1. Installs dependencies with pnpm
-2. Runs `pnpm test:ci`
-3. Runs `pnpm build`
-4. Installs Chromium for Playwright
-5. Starts the app and runs the Playwright end-to-end tests
+2. Checks formatting with `pnpm format:check`
+3. Lints with `pnpm lint`
+4. Runs `pnpm test:ci`
+5. Runs `pnpm build`
+6. Installs Chromium for Playwright
+7. Runs the Playwright end-to-end tests with `pnpm test:e2e`
 
 Workflow file:
 

@@ -29,6 +29,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Check formatting
+        run: pnpm format:check
+
+      - name: Lint
+        run: pnpm lint
+
       - name: Run unit tests
         run: pnpm test:ci
 
@@ -38,8 +44,5 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install chromium --with-deps
 
-      - name: Start app and run E2E tests
-        run: |
-          pnpm start &
-          npx wait-on http://localhost:4200 --timeout 60000
-          npx playwright test
+      - name: Run E2E tests
+        run: pnpm test:e2e

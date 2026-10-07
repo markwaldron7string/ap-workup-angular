@@ -1,0 +1,31 @@
+<div class="cal-header">
+  <button class="cal-nav" type="button" title="Previous year" (click)="changeYear(-1)">
+    &#171;
+  </button>
+  <button class="cal-nav" type="button" title="Previous month" (click)="changeMonth(-1)">
+    &#8249;
+  </button>
+  <span class="cal-month-label">{{ label() }}</span>
+  <button class="cal-nav" type="button" title="Next month" (click)="changeMonth(1)">&#8250;</button>
+  <button class="cal-nav" type="button" title="Next year" (click)="changeYear(1)">&#187;</button>
+</div>
+<div class="cal-dow">
+  <span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span
+  ><span>Sa</span>
+</div>
+<div class="cal-grid">
+  @for (blank of blanks(); track blank) {
+    <div class="cal-day empty"></div>
+  }
+  @for (day of days(); track day) {
+    <button
+      type="button"
+      class="cal-day"
+      [class.today]="isToday(day)"
+      [class.selected]="isSelected(day)"
+      (click)="pick(day)"
+    >
+      {{ day }}
+    </button>
+  }
+</div>

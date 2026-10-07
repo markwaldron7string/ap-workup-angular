@@ -1,0 +1,324 @@
+/* Premium table (original theme only) */
+.xl-sheet {
+  position: relative;
+  color: #000;
+  font-size: 15px;
+  line-height: 1.25;
+  font-variant-numeric: tabular-nums;
+}
+.xl-scroll {
+  overflow-x: auto;
+}
+.xl-table {
+  width: 100%;
+  min-width: 700px;
+  table-layout: fixed;
+  border-collapse: collapse;
+  background: #fff;
+  border: 2px solid #000;
+}
+.xl-col-label {
+  width: 168px;
+}
+.xl-col-fees {
+  width: 136px;
+}
+.xl-col-change {
+  width: 156px;
+}
+.xl-col-pct {
+  width: 118px;
+}
+.xl-table td {
+  position: relative;
+  height: 28px;
+  padding: 2px 6px;
+  border: 1px solid #d0d0d0;
+  text-align: center;
+}
+.xl-banner-row td {
+  background: #ccffcc;
+  border-color: #ccffcc;
+  font-weight: 700;
+  text-align: left;
+}
+.xl-banner-row td:last-child {
+  background: #fff;
+  border-color: #d0d0d0;
+}
+.xl-head td {
+  border: 2px solid #000;
+  font-size: 17px;
+  font-weight: 700;
+  line-height: 1.2;
+  vertical-align: bottom;
+}
+.xl-head .xl-head-note {
+  font-size: 14.5px;
+  vertical-align: middle;
+}
+.xl-good {
+  color: #008000;
+}
+.xl-bad {
+  color: #ff6600;
+}
+.xl-table .xl-label {
+  text-align: left;
+  white-space: nowrap;
+}
+.xl-table .xl-type {
+  font-weight: 700;
+}
+.xl-arrow {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  width: 44px;
+  height: 10px;
+  transform: translateY(-50%);
+  background: #4472c4;
+  clip-path: polygon(0 40%, 78% 40%, 78% 0, 100% 50%, 78% 100%, 78% 60%, 0 60%);
+}
+.xl-table .xl-in {
+  background: #ffff00;
+  border: 1px dotted #000;
+}
+.xl-row .xl-in {
+  padding: 0;
+}
+.xl-row .xl-in:focus-within {
+  outline: 2px solid #217346;
+  outline-offset: -2px;
+}
+.xl-cell {
+  width: 100%;
+  min-width: 0;
+  height: 26px;
+  padding: 2px 6px;
+  background: transparent;
+  border: 0;
+  outline: none;
+  color: #000;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}
+.xl-fees {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 3px;
+  padding: 0 3px;
+}
+.xl-fees .xl-cell {
+  flex: 1 1 40px;
+  padding: 2px;
+}
+.xl-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: #fff;
+  border: 1px solid #000;
+  font-size: 13px;
+  padding: 0 2px 0 5px;
+}
+.xl-chip button {
+  background: none;
+  border: 0;
+  color: #000;
+  font-size: 14px;
+  line-height: 1;
+  padding: 0 2px;
+  cursor: pointer;
+}
+.xl-chip button:hover {
+  color: #ff0000;
+}
+.xl-fee-add {
+  padding: 2px 6px;
+}
+.xl-table .xl-out {
+  background: #ccffcc;
+  font-weight: 700;
+}
+.xl-table .xl-out.empty::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-top: 6px solid #217346;
+  border-right: 6px solid transparent;
+}
+.xl-sheet .increase {
+  color: #ff0000;
+}
+.xl-sheet .decrease {
+  color: #008000;
+}
+.xl-copy {
+  position: absolute;
+  right: 3px;
+  top: 3px;
+  padding: 2px;
+  display: flex;
+}
+.xl-copy svg {
+  width: 14px;
+  height: 14px;
+}
+.xl-btn.copied {
+  background: #ccffcc;
+  border-color: #217346;
+}
+.xl-row.sel td {
+  box-shadow:
+    inset 0 2px 0 #217346,
+    inset 0 -2px 0 #217346;
+}
+.xl-row.sel td:first-child {
+  box-shadow:
+    inset 2px 0 0 #217346,
+    inset 0 2px 0 #217346,
+    inset 0 -2px 0 #217346;
+}
+.xl-row.sel td:last-child {
+  box-shadow:
+    inset -2px 0 0 #217346,
+    inset 0 2px 0 #217346,
+    inset 0 -2px 0 #217346;
+}
+
+.xl-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 5px 6px;
+  background: #f3f3f3;
+  border: 1px solid #c6c6c6;
+}
+.xl-nav {
+  display: none;
+}
+.xl-name,
+.xl-detail {
+  background: #fff;
+  border: 1px solid #c6c6c6;
+  padding: 4px 10px;
+}
+.xl-name {
+  white-space: nowrap;
+}
+.xl-fx {
+  color: #666;
+  font-style: italic;
+}
+.xl-detail {
+  flex: 1 1 240px;
+  min-width: 0;
+  color: #404040;
+}
+.xl-detail strong {
+  color: #000;
+  font-weight: 700;
+}
+.xl-detail strong.increase {
+  color: #ff0000;
+}
+.xl-detail strong.decrease {
+  color: #008000;
+}
+.xl-detail span {
+  margin-left: 4px;
+}
+.xl-detail.warn {
+  background: #ffeb9c;
+  border-color: #9c6500;
+  color: #5c3b00;
+}
+.xl-detail.warn strong {
+  color: #5c3b00;
+}
+.xl-bar-copy {
+  margin-left: auto;
+}
+.xl-sheet .result-secret-btn {
+  right: 6px;
+}
+
+/* Narrow screens: show the selected row one field per line, like Excel's Data Form */
+@media (max-width: 760px) {
+  .xl-table {
+    min-width: 0;
+  }
+  .xl-table,
+  .xl-table tbody,
+  .xl-table tr,
+  .xl-table td {
+    display: block;
+  }
+  .xl-table colgroup,
+  .xl-table .xl-head,
+  .xl-table .xl-example,
+  .xl-table .xl-row:not(.sel),
+  .xl-table .xl-banner-row td:last-child {
+    display: none;
+  }
+  .xl-row.sel td,
+  .xl-row.sel td:first-child,
+  .xl-row.sel td:last-child {
+    box-shadow: none;
+  }
+  .xl-row.sel td[data-label] {
+    display: grid;
+    grid-template-columns: 130px minmax(0, 1fr);
+    align-items: center;
+    min-height: 32px;
+    padding: 0;
+  }
+  .xl-row.sel td[data-label]::before {
+    content: attr(data-label);
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    background: #fff;
+    border-right: 1px solid #d0d0d0;
+    color: #000;
+    font-weight: 700;
+    padding: 4px 8px;
+    text-align: left;
+  }
+  .xl-table .xl-out.empty::before {
+    position: static;
+    border: 0;
+  }
+  .xl-nav {
+    display: block;
+  }
+}
+/* The all-caps flag opens to the left here so it does not cover the bar */
+.xl-sheet .result-secret-btn .result-secret-flag,
+.xl-sheet .result-secret-btn:not(.copied):hover .result-secret-flag,
+.xl-sheet .result-secret-btn:not(.copied):focus-visible .result-secret-flag {
+  top: 50%;
+  bottom: auto;
+  left: auto;
+  right: calc(100% + 8px);
+  transform: translateY(-50%);
+}
+.xl-sheet .result-secret-btn .result-secret-flag::before,
+.xl-sheet .result-secret-btn .result-secret-flag::after,
+.xl-sheet .result-secret-btn:not(.copied):hover .result-secret-flag::after,
+.xl-sheet .result-secret-btn:not(.copied):focus-visible .result-secret-flag::after {
+  top: 50%;
+  left: 100%;
+  transform: translateY(-50%);
+  border-top-color: transparent;
+  border-left-color: var(--copy-flag-border-hover);
+}
+.xl-sheet .result-secret-btn .result-secret-flag::before {
+  border-left-color: var(--copy-flag-bg);
+}
