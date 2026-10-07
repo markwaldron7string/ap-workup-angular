@@ -559,7 +559,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   color: #8899dd;
 }
 [data-theme="light"] .state-info { color: #3a55bb; }
-[data-theme="original"] .state-info { background: #dae3f3; border-color: #b4c6e7; color: #1f3864; }
+[data-theme="original"] .state-info { background: #eef1f7; border-color: #b4c6e7; color: #1f3864; }
 .state-info strong { color: #7088cc; font-weight: 500; }
 [data-theme="light"] .state-info strong { color: #2a45aa; }
 [data-theme="original"] .state-info strong { color: #1b5eab; }
@@ -804,7 +804,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
 [data-theme="light"] .tile { border-color: rgba(15,158,118,.3); }
 .tile-num { font-size: 28px; font-weight: 600; color: var(--success); line-height: 1.1; letter-spacing: -.02em; }
 /* Years Licensed result: same light blue as the state info strip */
-[data-theme="original"] .calc-column > .result.success { --success-bg: #dae3f3; }
+[data-theme="original"] .calc-column > .result.success { --success-bg: #eef1f7; }
 [data-theme="original"] .calc-column > .result.success .tile-num { color: #000000; }
 [data-theme="original"] .calc-column > .result.success .range-badge { color: #000000; }
 .tile-lbl { font-size: 11px; color: var(--muted); margin-top: 3px; }
