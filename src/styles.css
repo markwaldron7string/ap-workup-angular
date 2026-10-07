@@ -462,7 +462,8 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
 /* Match the height of the Add fee button */
 .premium-card .currency-input { padding-top: 8px; padding-bottom: 8px; }
 
-.fee-entry-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: start; }
+/* The Add fee button stretches to the input's height, so their edges line up */
+.fee-entry-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: stretch; }
 .fee-add-btn {
   background: transparent;
   color: var(--muted);
@@ -470,7 +471,7 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   border-radius: 4px;
   font-size: 13px;
   font-weight: 500;
-  padding: 10px 14px;
+  padding: 0 14px;
   cursor: pointer;
   transition: background .15s, color .15s, border-color .15s;
   display: flex;
