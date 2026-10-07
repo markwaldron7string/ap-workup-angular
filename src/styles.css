@@ -101,7 +101,7 @@
   --muted: #404040;
   --label: #000000;
   --meta: #3f3f3f;
-  --placeholder: #77772a;
+  --placeholder: #767676;
   --result-body: #262626;
   --clear-color: #000000;
   --clear-hover: #000000;
@@ -417,6 +417,9 @@ select {
   padding-right: 36px;
 }
 input.date-input::placeholder, input.currency-input::placeholder { color: var(--placeholder); }
+/* Match the height of the Premium Workup inputs */
+.years-card select { padding-top: 9px; padding-bottom: 9px; }
+.years-card input.date-input { padding-top: 8px; padding-bottom: 8px; }
 
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 @media (max-width: 960px) {
@@ -456,6 +459,8 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
   z-index: 1;
 }
 .currency-input { padding-left: 28px !important; }
+/* Match the height of the Add fee button */
+.premium-card .currency-input { padding-top: 8px; padding-bottom: 8px; }
 
 .fee-entry-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: start; }
 .fee-add-btn {
@@ -1003,8 +1008,9 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
 [data-theme="original"] select,
 [data-theme="original"] input.date-input,
 [data-theme="original"] input.currency-input {
-  background-color: #ffff00;
-  border: 1px dotted #000;
+  background-color: #ffffff;
+  border: 1px solid #808080;
+  box-shadow: inset 1px 1px 0 #404040, inset -1px -1px 0 #dfdfdf;
   font-family: inherit;
   font-size: 15px;
   padding: 5px 8px;
