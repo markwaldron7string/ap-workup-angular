@@ -803,6 +803,8 @@ input.date-input::placeholder, input.currency-input::placeholder { color: var(--
 }
 [data-theme="light"] .tile { border-color: rgba(15,158,118,.3); }
 .tile-num { font-size: 28px; font-weight: 600; color: var(--success); line-height: 1.1; letter-spacing: -.02em; }
+/* Years Licensed result: same light blue as the state info strip */
+[data-theme="original"] .calc-column > .result.success { --success-bg: #dae3f3; }
 [data-theme="original"] .calc-column > .result.success .tile-num { color: #000000; }
 [data-theme="original"] .calc-column > .result.success .range-badge { color: #000000; }
 .tile-lbl { font-size: 11px; color: var(--muted); margin-top: 3px; }
