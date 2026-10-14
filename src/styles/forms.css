@@ -306,6 +306,19 @@ input.currency-input::placeholder {
 .btn-clear:active {
   transform: scale(0.99);
 }
+/* Centre the capital letters exactly, whatever spacing the font reports above and below them
+   (it renders differently on Windows and Mac). Trimming only works on a block container, not flex;
+   buttons centre their content vertically on their own. The padding adds back what the trim
+   removes, rounded to whole pixels so the text isn't nudged by sub-pixel rounding. */
+@supports (text-box: trim-both cap alphabetic) {
+  .btn,
+  .btn-clear {
+    display: block;
+    text-align: center;
+    text-box: trim-both cap alphabetic;
+    padding-block: round(calc(13px + (1lh - 1cap) / 2), 1px);
+  }
+}
 
 .state-info {
   margin-top: 1rem;
