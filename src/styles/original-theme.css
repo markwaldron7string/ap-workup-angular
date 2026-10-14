@@ -188,6 +188,13 @@
   border-color: #0078d7;
   box-shadow: none;
 }
+/* Matches the text-box trim in forms.css: add back the trimmed space, rounded to whole pixels. */
+@supports (text-box: trim-both cap alphabetic) {
+  [data-theme='original'] .btn,
+  [data-theme='original'] .btn-clear {
+    padding-block: round(calc(6px + (1lh - 1cap) / 2), 1px);
+  }
+}
 [data-theme='original'] .btn.btn-off {
   opacity: 1;
   color: #8a8a8a;
