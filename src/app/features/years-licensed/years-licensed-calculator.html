@@ -37,7 +37,8 @@
     @if (rule(); as rule) {
       <div class="state-info">
         <strong>{{ rule.name }}:</strong>
-        {{ rule.code === 'NH' ? 'Driving age' : 'Permit age' }} <strong>{{ formatAge(rule.permitMonths) }}</strong> &nbsp;·&nbsp; License age
+        {{ rule.code === 'NH' ? 'Driving age' : 'Permit age' }}
+        <strong>{{ formatAge(rule.permitMonths) }}</strong> &nbsp;·&nbsp; License age
         <strong>{{ formatAge(rule.licenseMonths) }}</strong>
         &nbsp;·&nbsp; {{ modeLabel() }}
       </div>
