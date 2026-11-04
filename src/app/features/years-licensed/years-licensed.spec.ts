@@ -82,7 +82,7 @@ describe('calculateYearsLicensed', () => {
       );
     });
 
-    it('words the New Hampshire 15½ message without a learner\'s permit', () => {
+    it("words the New Hampshire 15½ message without a learner's permit", () => {
       const dob = new Date(2010, 0, 1);
 
       const result = calculate('NH', { dob, workup: new Date(2025, 8, 1) });
