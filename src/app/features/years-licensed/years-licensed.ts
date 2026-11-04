@@ -14,6 +14,9 @@ export interface YearsLicensedInput {
 
 const PERMIT_ONLY_TITLE = "Learner's permit age only - not yet licensed";
 const NO_PERMIT_TITLE = "Not yet eligible for a learner's permit";
+/** New Hampshire has no learner's permits: drivers aged 15½ to 16 may drive but are not yet licensed. */
+const NH_UNDER_LICENSE_AGE_TITLE = 'Old enough to drive - not yet licensed';
+const NH_UNDER_DRIVING_AGE_TITLE = 'Not yet old enough to drive';
 
 export function calculateYearsLicensed(input: YearsLicensedInput): CalcResult | null {
   const { rule, workup, dob, issueDate, reportedAge } = input;
@@ -141,6 +144,7 @@ function fromDateOfBirth(rule: StateRule, dob: Date, workup: Date): CalcResult {
   const permitDate = addMonths(dob, rule.permitMonths);
   const licenseDate = addMonths(dob, rule.licenseMonths);
   const isNewJersey = rule.mode === 'months';
+  const isNewHampshire = rule.code === 'NH';
 
   if (workup >= licenseDate) {
     return licensedResult(
@@ -154,14 +158,32 @@ function fromDateOfBirth(rule: StateRule, dob: Date, workup: Date): CalcResult {
   if (workup >= permitDate) {
     const reason = isNewJersey
       ? `As of the workup date, this driver is old enough for a learner's permit in New Jersey but has not yet reached the minimum license age (${formatAge(rule.licenseMonths)}).`
-      : `As of the workup date, this driver is old enough for a learner's permit in ${rule.name} but has not yet reached the minimum age for a regular license.`;
+      : isNewHampshire
+        ? "As of the workup date, this driver is old enough to drive in New Hampshire but has not yet reached the minimum age for a regular license. New Hampshire does not have learner's permits. Code license status as Valid & driver status as List only - Miscellaneous."
+        : `As of the workup date, this driver is old enough for a learner's permit in ${rule.name} but has not yet reached the minimum age for a regular license.`;
     return {
       tone: 'warn',
       icon: 'warn',
-      title: PERMIT_ONLY_TITLE,
+      title: isNewHampshire ? NH_UNDER_LICENSE_AGE_TITLE : PERMIT_ONLY_TITLE,
       body: [
         [plain(reason)],
         [strong(`Regular license eligible from: ${formatLongDate(licenseDate)}`)],
+      ],
+    };
+  }
+
+  if (isNewHampshire) {
+    return {
+      tone: 'danger',
+      icon: 'x',
+      title: NH_UNDER_DRIVING_AGE_TITLE,
+      body: [
+        [
+          plain(
+            `As of the workup date, this driver has not yet reached the minimum driving age in New Hampshire (${formatAge(rule.permitMonths)}).`,
+          ),
+        ],
+        [strong(`Old enough to drive from: ${formatLongDate(permitDate)}`)],
       ],
     };
   }

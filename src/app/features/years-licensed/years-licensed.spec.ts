@@ -82,6 +82,30 @@ describe('calculateYearsLicensed', () => {
       );
     });
 
+    it('words the New Hampshire 15½ message without a learner\'s permit', () => {
+      const dob = new Date(2010, 0, 1);
+
+      const result = calculate('NH', { dob, workup: new Date(2025, 8, 1) });
+
+      expect(result?.title).toBe('Old enough to drive - not yet licensed');
+      expect(bodyText(result)).toBe(
+        "As of the workup date, this driver is old enough to drive in New Hampshire but has not yet reached the minimum age for a regular license. New Hampshire does not have learner's permits. Code license status as Valid & driver status as List only - Miscellaneous.\nRegular license eligible from: January 1, 2026",
+      );
+    });
+
+    it('words the New Hampshire under-15½ message as driving age, not permit age', () => {
+      const result = calculate('NH', {
+        dob: new Date(2010, 0, 1),
+        workup: new Date(2025, 5, 1),
+      });
+
+      expect(result?.tone).toBe('danger');
+      expect(result?.title).toBe('Not yet old enough to drive');
+      expect(bodyText(result)).toBe(
+        'As of the workup date, this driver has not yet reached the minimum driving age in New Hampshire (15½).\nOld enough to drive from: July 1, 2025',
+      );
+    });
+
     it('words the New Jersey permit messages with the state ages', () => {
       const dob = new Date(2010, 0, 1);
 
