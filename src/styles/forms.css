@@ -328,6 +328,8 @@ input.currency-input::placeholder {
    The original (spreadsheet) theme keeps its own focus style. */
 html:not([data-theme='original']) {
   --ring-width: 2px;
+  /* Soft light-blue halo around the focused button, shown with the dashes */
+  --ring-glow: 0 0 6px 1px color-mix(in srgb, var(--blue) 40%, transparent);
 }
 /* Below 2x (e.g. Windows laptops at 100%/125%/150% scaling) the browser rounds a 2px outline down
    to fewer screen pixels than it gets on a Retina Mac, so it looks thin. 3px brings it back up. */
@@ -339,11 +341,14 @@ html:not([data-theme='original']) {
 html:not([data-theme='original']) :is(.btn, .btn-clear, .fee-add-btn):is(:focus, :active) {
   outline: var(--ring-width) dashed #fff;
   outline-offset: calc(-1 * var(--ring-width));
+  box-shadow: var(--ring-glow);
 }
 html:not([data-theme='original']) :is(.btn-clear, .fee-add-btn):is(:focus, :active) {
   outline-color: var(--blue);
   outline-offset: calc(-1px - var(--ring-width));
-  box-shadow: inset 0 0 0 var(--ring-width) #fff;
+  box-shadow:
+    inset 0 0 0 var(--ring-width) #fff,
+    var(--ring-glow);
 }
 
 .state-info {
