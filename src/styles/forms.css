@@ -321,18 +321,29 @@ input.currency-input::placeholder {
 }
 
 /* Dashed focus ring, shown when a button is tabbed to or clicked (:active covers Safari, which
-   doesn't focus buttons on click). It's the browser's own dashed outline, pulled 3px inside the
-   button so the dashes sit just inside the edge. Browsers snap outlines to whole screen pixels, so
-   the dashes stay even on every side at any display scaling. Calculate gets white dashes over its
-   blue; Add fee and Clear get blue dashes, with an inset shadow filling the gaps with white.
+   doesn't focus buttons on click). It's the browser's own dashed outline, pulled inside the button.
+   Browsers snap outlines to whole screen pixels, so the dashes stay even on every side.
+   Calculate gets white dashes running right up to its edge. Add fee and Clear get blue dashes just
+   inside their 1px border, with an inset shadow filling the gaps with white.
    The original (spreadsheet) theme keeps its own focus style. */
+html:not([data-theme='original']) {
+  --ring-width: 2px;
+}
+/* Below 2x (e.g. Windows laptops at 100%/125%/150% scaling) the browser rounds a 2px outline down
+   to fewer screen pixels than it gets on a Retina Mac, so it looks thin. 3px brings it back up. */
+@media (max-resolution: 1.99dppx) {
+  html:not([data-theme='original']) {
+    --ring-width: 3px;
+  }
+}
 html:not([data-theme='original']) :is(.btn, .btn-clear, .fee-add-btn):is(:focus, :active) {
-  outline: 2px dashed #fff;
-  outline-offset: -3px;
+  outline: var(--ring-width) dashed #fff;
+  outline-offset: calc(-1 * var(--ring-width));
 }
 html:not([data-theme='original']) :is(.btn-clear, .fee-add-btn):is(:focus, :active) {
   outline-color: var(--blue);
-  box-shadow: inset 0 0 0 2px #fff;
+  outline-offset: calc(-1px - var(--ring-width));
+  box-shadow: inset 0 0 0 var(--ring-width) #fff;
 }
 
 .state-info {
