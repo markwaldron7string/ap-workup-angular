@@ -320,6 +320,64 @@ input.currency-input::placeholder {
   }
 }
 
+/* Dashed focus ring, shown when a button is tabbed to or clicked (:active covers Safari, which
+   doesn't focus buttons on click). Drawn with gradients on a pseudo-element so the dash and gap
+   lengths and colours can differ: Calculate gets long white dashes with short blue gaps, Add fee
+   and Clear get the reverse. */
+.btn,
+.btn-clear,
+.fee-add-btn {
+  position: relative;
+  --ring-dash: #fff;
+  --ring-gap: var(--blue);
+  --ring-width: 2px;
+  --ring-dash-len: 6px;
+  --ring-gap-len: 3px;
+  --ring-inset: 0px;
+}
+.btn-clear,
+.fee-add-btn {
+  --ring-dash: var(--blue);
+  --ring-gap: #fff;
+  --ring-inset: -1px; /* sit on top of the 1px border */
+}
+.btn::after,
+.btn-clear::after,
+.fee-add-btn::after {
+  --ring-h: repeating-linear-gradient(
+    90deg,
+    var(--ring-dash) 0 var(--ring-dash-len),
+    var(--ring-gap) var(--ring-dash-len) calc(var(--ring-dash-len) + var(--ring-gap-len))
+  );
+  --ring-v: repeating-linear-gradient(
+    180deg,
+    var(--ring-dash) 0 var(--ring-dash-len),
+    var(--ring-gap) var(--ring-dash-len) calc(var(--ring-dash-len) + var(--ring-gap-len))
+  );
+  content: '';
+  position: absolute;
+  inset: var(--ring-inset);
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background:
+    var(--ring-h) top / 100% var(--ring-width) no-repeat,
+    var(--ring-h) bottom / 100% var(--ring-width) no-repeat,
+    var(--ring-v) left / var(--ring-width) 100% no-repeat,
+    var(--ring-v) right / var(--ring-width) 100% no-repeat;
+}
+.btn:is(:focus, :active)::after,
+.btn-clear:is(:focus, :active)::after,
+.fee-add-btn:is(:focus, :active)::after {
+  opacity: 1;
+}
+.btn:is(:focus, :active),
+.btn-clear:is(:focus, :active),
+.fee-add-btn:is(:focus, :active) {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--blue-glow);
+}
+
 .state-info {
   margin-top: 1rem;
   background: rgba(47, 84, 212, 0.08);
