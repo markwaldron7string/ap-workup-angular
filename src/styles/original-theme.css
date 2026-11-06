@@ -195,12 +195,7 @@
     padding-block: round(calc(6px + (1lh - 1cap) / 2), 1px);
   }
 }
-/* The dashed focus ring from forms.css is for the light and dark themes only */
-[data-theme='original'] .btn::after,
-[data-theme='original'] .btn-clear::after,
-[data-theme='original'] .fee-add-btn::after {
-  display: none;
-}
+/* The dashed focus ring in forms.css skips this theme; it uses this solid outline instead */
 [data-theme='original'] :is(.btn, .btn-clear, .fee-add-btn):focus-visible {
   outline: 2px solid #217346;
   outline-offset: 1px;
