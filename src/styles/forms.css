@@ -328,8 +328,9 @@ input.currency-input::placeholder {
    The original (spreadsheet) theme keeps its own focus style. */
 html:not([data-theme='original']) {
   --ring-width: 2px;
-  /* Soft light-blue halo around the focused button, shown with the dashes */
-  --ring-glow: 0 0 6px 1px color-mix(in srgb, var(--blue) 40%, transparent);
+  /* Light blue used for the halo around a focused button and the dark-mode Add fee/Clear hover fill */
+  --ring-tint: color-mix(in srgb, var(--blue) 40%, transparent);
+  --ring-glow: 0 0 6px 1px var(--ring-tint);
 }
 /* Below 2x (e.g. Windows laptops at 100%/125%/150% scaling) the browser rounds a 2px outline down
    to fewer screen pixels than it gets on a Retina Mac, so it looks thin. 3px brings it back up. */
@@ -349,6 +350,14 @@ html:not([data-theme='original']) :is(.btn-clear, .fee-add-btn):is(:focus, :acti
   box-shadow:
     inset 0 0 0 var(--ring-width) #fff,
     var(--ring-glow);
+}
+html:not([data-theme='original']) :is(.btn-clear, .fee-add-btn):hover {
+  background: var(--ring-tint);
+}
+/* Light mode uses a paler blue; the tint above stays for dark mode, where this would wash out the
+   light grey text */
+html[data-theme='light'] :is(.btn-clear, .fee-add-btn):hover {
+  background: #f3f9fc;
 }
 
 .state-info {
