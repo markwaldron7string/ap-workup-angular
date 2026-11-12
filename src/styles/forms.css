@@ -359,6 +359,10 @@ html:not([data-theme='original']) :is(.btn-clear, .fee-add-btn):hover {
 html[data-theme='light'] :is(.btn-clear, .fee-add-btn):hover {
   background: #f3f9fc;
 }
+/* Dark mode: brighten the Add fee and Clear labels to white on hover */
+html:not([data-theme='original'], [data-theme='light']) :is(.btn-clear, .fee-add-btn):hover {
+  color: #fff;
+}
 
 .state-info {
   margin-top: 1rem;
